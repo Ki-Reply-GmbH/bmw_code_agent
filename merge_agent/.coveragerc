@@ -1,0 +1,6 @@
+[run]
+omit = 
+    */*prompts.py
+    */main.py
+    */server.py
+    */webhooks.py
