@@ -42,13 +42,11 @@ class GitHandler:
 
         self._initialize_repo(repo_url)
 
-        """
         # Initializing the attributes for the merge conflicts
         self._unmerged_filepaths = []
         self._unmerged_filecontents = []
 
         self._run_workflow()
-        """
 
     def _initialize_repo(self, repo_url: str):
         """
@@ -101,7 +99,7 @@ class GitHandler:
         This method iterates over the unmerged blobs in the index of the downstream repository and 
         adds the file paths of any unmerged blobs to the _unmerged_filepaths attribute.
         """
-        for path in self._downstream.index.unmerged_blobs():
+        for path in self._repo.index.unmerged_blobs():
             self._unmerged_filepaths += [path]
 
     def _get_merge_conflicts(self):
@@ -114,7 +112,7 @@ class GitHandler:
         comparable using the cache.
         """
         for path in self._unmerged_filepaths:
-            full_path = os.path.join(self._tmp_downstream_path, path).replace("\\","/")    # Backslashes aus dem path ersetzen, damit es einheitlich ist
+            full_path = os.path.join(self._tmp_path, path).replace("\\","/")    # Backslashes aus dem path ersetzen, damit es einheitlich ist
             with open(full_path) as f:
                 file_content = f.read()
 
@@ -151,7 +149,7 @@ class GitHandler:
             bool: False if the merge is successful, True if a GitCommandError is raised.
         """
         try:
-            self._downstream.git.merge(self._downstream.refs.main)
+            self._repo.git.merge(self._repo.refs.main)
             return False
         except GitCommandError as e:
             return True
