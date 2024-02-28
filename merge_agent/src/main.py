@@ -28,3 +28,17 @@ for i, file_path in enumerate(gi.get_unmerged_filepaths()):
 ag.write_responses()
 ag.make_commit_msg()
 ag.git_actions()
+
+
+# Temporäer Code-Abschnitt. Wird später in die Controller-Klasse verschoben
+def save_to_file(attribute1, attribute2, attribute3):
+    with open("../tmp_explanations.txt", "w") as f:
+        f.write("\n".join(attribute1))
+
+    with open("../tmp_responses.txt", "w") as f:
+        f.write("\n".join(attribute2))
+
+    with open("../tmp_commit_msg.txt", "w") as f:
+        f.write(attribute3)
+
+save_to_file(ag.explanations, ag.responses, ag.commit_msg)
