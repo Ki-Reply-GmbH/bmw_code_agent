@@ -71,10 +71,11 @@ class GitHandler:
             self._clean_up()
 
         self._repo = Repo.clone_from(repo_url, self._tmp_path)
-        print("Cloned main repo locally.")
-
+        # Feature Branch soll aus der target branch erstellt werden,
+        # weil hier der Pull Request erstellt wurde.
+        self._repo.git.checkout(self._target_branch)
         self._unique_feature_branch_name = datetime.now().strftime("%Y%m-%d%H-%M%S-") + str(uuid4())
-        self._feature_branch = self._repo.create_head(self._unique_feature_branch_name, self._repo.refs.main)
+        self._feature_branch = self._repo.create_head(self._unique_feature_branch_name)
         self._repo.git.checkout(self._feature_branch)
         print("Creatured feature branch.")
         print("active branch: " + self._repo.active_branch.name)
