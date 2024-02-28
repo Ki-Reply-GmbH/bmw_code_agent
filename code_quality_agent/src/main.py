@@ -7,7 +7,7 @@ print(python_files)
 print()
 """
 
-agent = LintAgent("./tests")
-agent.improve_py_code()
+agent = LintAgent(directory="./tests", language="java")
+agent.improve_code()
 agent.write_changes()
 print(agent)

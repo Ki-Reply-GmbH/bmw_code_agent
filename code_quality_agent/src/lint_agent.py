@@ -3,12 +3,12 @@ import re
 import os
 import json
 import openai
-from prompts import linter_prompt
+from prompts import lint_prompt
 
 openai.api_key = os.environ["OPENAI_API_KEY"]
 def get_completion(prompt, model="gpt-4-1106-preview", type="json_object"):
     """
-    Sends a prompt to the OpenAI API and returns the AI's response.
+    Sends a prompt to the OpenAI API and returns the AI"s response.
     """
     messages = [
         {
@@ -23,7 +23,7 @@ def get_completion(prompt, model="gpt-4-1106-preview", type="json_object"):
     response = openai.OpenAI().chat.completions.create(
         model=model,
         messages=messages,
-        temperature=0, # this is the degree of randomness of the model's output,
+        temperature=0, # this is the degree of randomness of the model"s output,
         response_format={"type": type}
     )
     return response.choices[0].message.content
@@ -43,19 +43,23 @@ class LintAgent:
         """
         Runs the appropriate linter on the directory and stores the output in raw_stats.
         """
-        if self.language == 'python':
+        if self.language == "python":
             result = subprocess.run(
                 ["black", "--diff", self.directory],
                 stdout=subprocess.PIPE,
                 stderr=subprocess.STDOUT
-            )
-        elif self.language == 'java':
+                )
+            self.raw_stats = result.stdout.decode("utf-8")
+        elif self.language == "java":
             result = subprocess.run(
-                ["checkstyle", "-f", "xml", self.directory],
-                stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT
-            )
-        self.raw_stats = result.stdout.decode("utf-8")
+                ["C:\\pmd-bin-7.0.0-rc4\\bin\\pmd.bat",
+                 "check",
+                 "-d", self.directory,
+                 "-R", "rulesets/java/quickstart.xml"],  #TODO env erstellen
+                capture_output=True,
+                text=True
+                )
+            self.raw_stats = result.stdout
 
     def create_tasks(self):
         """
@@ -75,10 +79,7 @@ class LintAgent:
             with open(file_path, "r") as file:
                 code = file.read()
             linter_suggestions = task_description
-            if self.language == 'python':
-                prompt = py_prompt.format(code=code, linter_suggestions=linter_suggestions)
-            elif self.language == 'java':
-                prompt = java_prompt.format(code=code, linter_suggestions=linter_suggestions)
+            prompt = lint_prompt.format(code=code, linter_suggestions=linter_suggestions)
             print("Calling OpenAI API for " + file_path + "...")
             improved_code = get_completion(prompt)
             self.improved_code.append((file_path, improved_code))
