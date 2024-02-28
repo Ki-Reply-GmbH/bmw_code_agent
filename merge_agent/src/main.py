@@ -15,8 +15,7 @@ gi = GitHandler(f"https://{git_username}:{git_access_token}@github.com/{owner}/{
                 source_branch,
                 target_branch
                 )
-"""
-ag = Agent(gi._downstream, gi._upstream)
+ag = Agent(gi._repo)
 
 
 for i, file_path in enumerate(gi.get_unmerged_filepaths()):
@@ -29,14 +28,3 @@ for i, file_path in enumerate(gi.get_unmerged_filepaths()):
 ag.write_responses()
 ag.make_commit_msg()
 ag.git_actions()
-ag.create_pull_request()
-"""
-#gi.delete_feature_branch() If we delete this branch, the pull request will be closed.
-"""
-print()
-print("Press any key to save the files without merge conflicts.")
-input()
-writing_agent = WriteAgent()
-writing_agent.get_code("./responses.csv")
-writing_agent.save_code_to_file()
-"""
