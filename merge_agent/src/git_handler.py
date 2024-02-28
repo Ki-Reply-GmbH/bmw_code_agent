@@ -19,16 +19,8 @@ class GitHandler:
     main branch into the feature branch, and gets the file paths and contents of any unmerged files.
 
     Attributes:
-        _tmp_path (str): The path to the temporary directory.
-        _tmp_downstream_path (str): The path to the downstream repository in the temporary directory.
-        _upstream (Repo): The upstream repository.
-        _downstream (Repo): The downstream repository.
-        _feature_branch (Head): The feature branch in the downstream repository.
-        _unique_feature_branch_name (str): The unique name of the feature branch.
-        _unmerged_filepaths (list of str): The file paths of any unmerged files.
-        _unmerged_filecontents (list of str): The contents of any unmerged files.
     """
-    def __init__(self, downstream_url: str, upstream_url: str):
+    def __init__(self, repo_url: str, source_branch: str, target_branch: str):
         """
         Initializes a GitHandler instance.
 
@@ -42,21 +34,23 @@ class GitHandler:
         """
         # Initializing and cloning the repositories
         self._tmp_path =  os.path.join(os.path.dirname(__file__), ".tmp")
-        self._tmp_downstream_path = os.path.join(os.path.dirname(__file__), ".tmp/downstream")
-        self._upstream = None
-        self._downstream = None
+        self._repo = None
+        self._source_branch = source_branch
+        self._target_branch = target_branch
         self._feature_branch = None
         self._unique_feature_branch_name = ""
 
-        self._initialize_repo(downstream_url, upstream_url)
+        self._initialize_repo(repo_url)
 
+        """
         # Initializing the attributes for the merge conflicts
         self._unmerged_filepaths = []
         self._unmerged_filecontents = []
 
         self._run_workflow()
+        """
 
-    def _initialize_repo(self, repo_url: str, upstream_url: str):
+    def _initialize_repo(self, repo_url: str):
         """
         Initializes and clones the repositories and creates a feature branch.
 
@@ -72,27 +66,18 @@ class GitHandler:
             repo_url (str): The URL of the downstream repository.
             upstream_url (str): The URL of the upstream repository.
         """
-        tmp_upstream_path = os.path.join(self._tmp_path, "upstream")
-
-        if os.path.exists(tmp_upstream_path) or os.path.exists(self._tmp_downstream_path):
+        if os.path.exists(self._tmp_path) or os.path.exists(self._tmp_downstream_path):
             print("Cleaning up the .tmp directory ...")
             self._clean_up()
 
-        self._upstream = Repo.clone_from(upstream_url, tmp_upstream_path)
-        print("Cloned main repo locally (upstream).")
-
-        print("Cloning fork (downstream) ...")
-        self._downstream = Repo.clone_from(repo_url, self._tmp_downstream_path)
-        print("Cloned fork locally (downstream).")
-
-        remote = self._downstream.create_remote("upstream", url=upstream_url)
-        remote.fetch()
+        self._repo = Repo.clone_from(repo_url, self._tmp_path)
+        print("Cloned main repo locally.")
 
         self._unique_feature_branch_name = datetime.now().strftime("%Y%m-%d%H-%M%S-") + str(uuid4())
-        self._feature_branch = self._downstream.create_head(self._unique_feature_branch_name, remote.refs.main)
-        self._downstream.git.checkout(self._feature_branch)
+        self._feature_branch = self._repo.create_head(self._unique_feature_branch_name, self._repo.refs.main)
+        self._repo.git.checkout(self._feature_branch)
         print("Creatured feature branch.")
-        print("active branch: " + self._downstream.active_branch.name)
+        print("active branch: " + self._repo.active_branch.name)
 
     def _run_workflow(self):
         """

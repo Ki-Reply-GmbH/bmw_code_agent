@@ -5,8 +5,17 @@ from agent import Agent
 git_username = os.environ["GIT_USERNAME"]
 git_access_token = os.environ["GIT_ACCESS_TOKEN"]
 
-gi = GitHandler(f"https://{git_username}:{git_access_token}@github.com/Ki-Reply-GmbH/uc-postal-tracking_routeCalc.git",
-                f"https://{git_username}:{git_access_token}@github.com/Ki-Reply-GmbH/uc-postal-tracking.git")
+# Arguments
+owner = "TimoKubera"
+repo = "pull_request_merge_conflict"
+source_branch = "main"
+target_branch = "feature"
+
+gi = GitHandler(f"https://{git_username}:{git_access_token}@github.com/{owner}/{repo}.git",
+                source_branch,
+                target_branch
+                )
+"""
 ag = Agent(gi._downstream, gi._upstream)
 
 
@@ -21,7 +30,7 @@ ag.write_responses()
 ag.make_commit_msg()
 ag.git_actions()
 ag.create_pull_request()
-
+"""
 #gi.delete_feature_branch() If we delete this branch, the pull request will be closed.
 """
 print()
