@@ -66,7 +66,7 @@ class GitHandler:
             repo_url (str): The URL of the downstream repository.
             upstream_url (str): The URL of the upstream repository.
         """
-        if os.path.exists(self._tmp_path) or os.path.exists(self._tmp_downstream_path):
+        if os.path.exists(self._tmp_path):
             print("Cleaning up the .tmp directory ...")
             self._clean_up()
 
