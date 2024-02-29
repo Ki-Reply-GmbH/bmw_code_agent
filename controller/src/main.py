@@ -35,9 +35,9 @@ for i, file_path in enumerate(mgh.get_unmerged_filepaths()):
     resp = mag.solve_merge_conflict()
 
 print("Committing changes...")
-mgh.write_responses(mag.get_file_paths(), mag.get_responses())
+mgh.write_responses(mag.get_file_paths(), mag.get_responses()) #TODO in GitHandler und hier und beim LintAgent löschen
 mag.make_commit_msg()
-mgh.git_actions(mag.get_file_paths(), mag.get_commit_msg())
+gi.commit_changes(mag.get_file_paths(), mag.get_commit_msg())
 
 # Temporäer Code-Abschnitt. Soll commited werden
 def save_to_file(attribute1, attribute2, attribute3):
@@ -67,4 +67,6 @@ ja_lag.write_changes()
 print(py_lag)
 print()
 print(ja_lag)
-#TODO print("Committing changes...")
+
+#print("Committing changes...")
+#gi.commit_changes(py_lag.get_file_paths(), py_lag.get_commit_msg())
