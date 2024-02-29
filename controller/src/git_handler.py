@@ -19,6 +19,9 @@ class GitHandler:
     _feature_branch = None
     _unique_feature_branch_name = ""
 
+    def get_tmp_path(self):
+        return self._tmp_path
+
     @classmethod
     def initialize(cls, source_branch: str, target_branch: str):
         project_root_dir = os.path.dirname(

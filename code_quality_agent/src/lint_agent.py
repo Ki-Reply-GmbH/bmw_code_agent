@@ -4,7 +4,7 @@ import os
 import json
 import openai
 from collections import defaultdict
-from prompts import lint_prompt
+from code_quality_agent.src.prompts import lint_prompt
 
 openai.api_key = os.environ["OPENAI_API_KEY"]
 def get_completion(prompt, model="gpt-4-1106-preview", type="json_object"):
