@@ -30,9 +30,9 @@ for i, file_path in enumerate(mgh.get_unmerged_filepaths()):
     print("Ai is solving the merge conflict in " + mgh._unmerged_filepaths[i] + "...")
     resp = mag.solve_merge_conflict()
 
-mag.write_responses()
+mgh.write_responses(mag.get_file_paths(), mag.get_responses())
 mag.make_commit_msg()
-mag.git_actions()
+mgh.git_actions(mag.get_file_paths(), mag.get_commit_msg())
 
 # Temporäer Code-Abschnitt. Soll commited werden
 def save_to_file(attribute1, attribute2, attribute3):
