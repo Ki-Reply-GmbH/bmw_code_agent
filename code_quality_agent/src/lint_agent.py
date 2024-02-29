@@ -4,7 +4,7 @@ import os
 import json
 import openai
 from collections import defaultdict
-from code_quality_agent.src.prompts import lint_prompt
+import code_quality_agent.src.prompts as prompts
 
 openai.api_key = os.environ["OPENAI_API_KEY"]
 def get_completion(prompt, model="gpt-4-1106-preview", type="json_object"):
@@ -36,9 +36,31 @@ class LintAgent:
         self.tasks = []
         self.improved_source_code = []
         self.language = language
+        self.commit_msg = ""
 
         self.check_code()
         self.create_tasks()
+
+    def get_commit_msg(self):
+        """
+        Returns the commit message.
+
+        Returns:
+            str: The commit message.
+        """
+        return self.commit_msg
+
+    def get_file_paths(self):
+        """
+        Returns the file paths of the files with merge conflicts.
+
+        Returns:
+            list of str: The file paths of the files with merge conflicts.
+        """
+        file_paths = []
+        for task, _ in self.tasks:
+            file_paths.append(task)
+        return file_paths
 
     def check_code(self):
         """
@@ -92,7 +114,7 @@ class LintAgent:
             with open(file_path, "r") as file:
                 code = file.read()
             linter_suggestions = task_description
-            prompt = lint_prompt.format(source_code=code, linter_suggestions=linter_suggestions)
+            prompt = prompts.lint_prompt.format(source_code=code, linter_suggestions=linter_suggestions)
             print("Calling OpenAI API for " + file_path + "...")
             print(prompt)
             print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
@@ -107,6 +129,23 @@ class LintAgent:
             improved_source_code = json.loads(improved_source_code)["improved_source_code"]
             with open(path, "w") as file:
                 file.write(improved_source_code)
+
+    def make_commit_msg(self):
+        """
+        Generates a commit message based on the explanations provided by the AI model.
+
+        This method constructs a commit prompt by appending each explanation from the explanations list 
+        to the commit_prompt string. It then sends the commit_prompt to the OpenAI API and stores the 
+        response as the commit message.
+
+        The commit message is stored in the instance variable commit_msg.
+        """
+        tasks = ""
+        for path, improved_source_code in self.improved_source_code:
+            tasks += path + ":\n"
+            tasks += str(improved_source_code) + "\n"
+        print("Commit Prompt: " + prompts.commit_prompt.format(tasks=tasks))
+        self.commit_msg = get_completion(prompts.commit_prompt.format(tasks=tasks), type="text")
 
     def __str__(self):
         s = "Raw Stats:\n"

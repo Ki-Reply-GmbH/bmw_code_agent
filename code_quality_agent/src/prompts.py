@@ -28,3 +28,16 @@ linter suggestions:
 {linter_suggestions}
 ####
 """
+
+commit_prompt = """
+I want you to act as a GitHub commit message generator.
+Summarize the following explanations in 3-10 words. 
+The summary should contain the most important information from each individual \
+declaration.
+Do not write any explanations or other words, just reply with the commit \
+message.
+The commit message should be a short, meaningful, and descriptive.
+Avoid duplicate content in the commit message.
+
+{tasks}
+"""
