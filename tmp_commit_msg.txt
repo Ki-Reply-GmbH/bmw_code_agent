@@ -1,1 +1,1 @@
-Resolved merge conflict by combining changes
+Resolved merge conflict by combining line changes
