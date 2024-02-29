@@ -79,3 +79,22 @@ class GitHandler:
         cls._repo.git.add(file_paths)
         cls._repo.git.commit("-m", commit_msg)
         cls._repo.git.push("--set-upstream", "origin", GitHandler._repo.active_branch.name)
+
+    @classmethod
+    def write_responses(cls, file_paths, responses):
+        """
+        Writes the AI's responses (solutions to the merge conflicts) back to the files.
+
+        This method iterates over the _file_paths list and for each file path, it opens the corresponding 
+        file in the downstream repository in write mode and writes the corresponding response from the 
+        responses list to the file.
+
+        Note: The method assumes that the order of the file paths in _file_paths matches the order of 
+        the responses in responses.
+        """
+        print("Writing responses to files...")
+        print(file_paths)
+        for i, file_path in enumerate(file_paths):
+            with open(os.path.join(cls._tmp_path, file_path), 'w') as file:
+                print("Writing to " + os.path.join(cls._tmp_path, file_path))
+                file.write(responses[i])

@@ -152,24 +152,6 @@ class MergeGitHandler(GitHandler):
         """
         return self._unmerged_filecontents[index]
 
-    def write_responses(self, file_paths, responses):
-        """
-        Writes the AI's responses (solutions to the merge conflicts) back to the files.
-
-        This method iterates over the _file_paths list and for each file path, it opens the corresponding 
-        file in the downstream repository in write mode and writes the corresponding response from the 
-        responses list to the file.
-
-        Note: The method assumes that the order of the file paths in _file_paths matches the order of 
-        the responses in responses.
-        """
-        print("Writing responses to files...")
-        print(file_paths)
-        for i, file_path in enumerate(file_paths):
-            with open(os.path.join(GitHandler._tmp_path, file_path), 'w') as file:
-                print("Writing to " + os.path.join(GitHandler._tmp_path, file_path))
-                file.write(responses[i])
-
     def _print_unmerged_files(self):
         """
         Prints the file paths of any unmerged files.
