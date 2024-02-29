@@ -3,6 +3,7 @@ import re
 import os
 import json
 import openai
+from collections import defaultdict
 from prompts import lint_prompt
 
 openai.api_key = os.environ["OPENAI_API_KEY"]
@@ -72,11 +73,15 @@ class LintAgent:
             self.tasks = matches
         elif self.language == "java":
             lines = self.raw_stats.split("\n")
+            # Dictionary verwenden, damit kein Dateipfad mehrfach vorkommt.
+            tmp_dict = defaultdict(list)
             for line in lines:
                 match = re.match(r"(.*\.java):\d+:\s+(.*)", line)
                 if match:
                     directory, task = match.groups()
-                    self.tasks.append((directory, task))
+                    tmp_dict[directory].append(task)
+            # Dictionary in Liste von Tupeln umwandeln
+            self.tasks = [(k, "\n".join(v)) for k, v in tmp_dict.items()]
 
     def improve_code(self):
         """
@@ -89,6 +94,8 @@ class LintAgent:
             linter_suggestions = task_description
             prompt = lint_prompt.format(source_code=code, linter_suggestions=linter_suggestions)
             print("Calling OpenAI API for " + file_path + "...")
+            print(prompt)
+            print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
             improved_code = get_completion(prompt)
             self.improved_code.append((file_path, improved_code))
 
