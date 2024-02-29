@@ -66,9 +66,17 @@ class LintAgent:
         Extracts tasks from the raw output and stores them in the tasks list.
         Each task is a tuple where the first element is a file path and the second element is the task description.
         """
-        pattern = r"--- (.*?)\s.*?@@.*?\n(.*?)would reformat"
-        matches = re.findall(pattern, self.raw_stats, re.DOTALL)
-        self.tasks = matches
+        if self.language == "python":
+            pattern = r"--- (.*?)\s.*?@@.*?\n(.*?)would reformat"
+            matches = re.findall(pattern, self.raw_stats, re.DOTALL)
+            self.tasks = matches
+        elif self.language == "java":
+            lines = self.raw_stats.split("\n")
+            for line in lines:
+                match = re.match(r"(.*\.java):\d+:\s+(.*)", line)
+                if match:
+                    directory, task = match.groups()
+                    self.tasks.append((directory, task))
 
     def improve_code(self):
         """
