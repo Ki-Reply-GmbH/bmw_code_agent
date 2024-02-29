@@ -12,7 +12,7 @@ from datetime import datetime
 from uuid import uuid4
 from controller.src.git_handler import GitHandler
 
-class MergeGitHandler:
+class MergeGitHandler(GitHandler):
     """
     A class for handling git operations.
 
@@ -21,7 +21,7 @@ class MergeGitHandler:
 
     Attributes:
     """
-    def __init__(self, path_repo: str, source_branch: str, target_branch: str):
+    def __init__(self):
         """
         Initializes a GitHandler instance.
 
@@ -33,18 +33,6 @@ class MergeGitHandler:
             downstream_url (str): The URL of the downstream repository.
             upstream_url (str): The URL of the upstream repository.
         """
-        # Initializing and cloning the repositories
-        self._tmp_path =  path_repo
-        self._repo = Repo(self._tmp_path)
-        self._source_branch = source_branch
-        self._target_branch = target_branch
-        """         
-        self._feature_branch = None
-        self._unique_feature_branch_name = ""
-
-        self._initialize_repo(repo_url)
-        """
-
         # Initializing the attributes for the merge conflicts
         self._unmerged_filepaths = []
         self._unmerged_filecontents = []

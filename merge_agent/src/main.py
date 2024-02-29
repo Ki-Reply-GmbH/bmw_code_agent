@@ -11,10 +11,7 @@ repo = "pull_request_merge_conflict"
 source_branch = "main"
 target_branch = "feature"
 
-gi = MergeGitHandler("C:\\Users\\t.kubera\\dev\\bmw\\bmw_code_agent\\.tmp",
-                source_branch,
-                target_branch
-                )
+gi = MergeGitHandler()
 """
 ag = Agent(gi._repo)
 
