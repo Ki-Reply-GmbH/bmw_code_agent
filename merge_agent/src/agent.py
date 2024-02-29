@@ -17,9 +17,9 @@ import pandas as pd
 import json
 import ast
 from github import Github, Auth
-import prompts
-from functions import encode_to_base64, decode_from_base64
-from cache import Cache
+import merge_agent.src.prompts as prompts
+from merge_agent.src.functions import encode_to_base64, decode_from_base64
+from merge_agent.src.cache import Cache
 
 EXPLANATION, ANSWER = 0, 0
 CODE, COMMIT_MSG = 1, 1
