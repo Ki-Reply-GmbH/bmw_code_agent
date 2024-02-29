@@ -33,7 +33,14 @@ class GitHandler:
             upstream_url (str): The URL of the upstream repository.
         """
         # Initializing and cloning the repositories
-        self._tmp_path =  os.path.join(os.path.dirname(__file__), ".tmp")
+        project_root_dir = os.path.dirname(
+            os.path.dirname(
+                os.path.dirname(
+                    os.path.abspath(__file__)
+                    )
+                )
+            )
+        self._tmp_path =  os.path.join(project_root_dir, ".tmp")
         self._repo = None
         self._source_branch = source_branch
         self._target_branch = target_branch
@@ -41,6 +48,8 @@ class GitHandler:
         self._unique_feature_branch_name = ""
 
         self._initialize_repo(repo_url)
+
+        print("Tmp path:" + self._tmp_path)
 
     def _initialize_repo(self, repo_url: str):
         """

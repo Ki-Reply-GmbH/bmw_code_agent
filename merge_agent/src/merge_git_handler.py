@@ -10,8 +10,9 @@ import shutil
 import stat
 from datetime import datetime
 from uuid import uuid4
+from controller.src.git_handler import GitHandler
 
-class GitHandler:
+class MergeGitHandler:
     """
     A class for handling git operations.
 
@@ -20,7 +21,7 @@ class GitHandler:
 
     Attributes:
     """
-    def __init__(self, repo_url: str, source_branch: str, target_branch: str):
+    def __init__(self, path_repo: str, source_branch: str, target_branch: str):
         """
         Initializes a GitHandler instance.
 
@@ -33,14 +34,16 @@ class GitHandler:
             upstream_url (str): The URL of the upstream repository.
         """
         # Initializing and cloning the repositories
-        self._tmp_path =  os.path.join(os.path.dirname(__file__), ".tmp")
-        self._repo = None
+        self._tmp_path =  path_repo
+        self._repo = Repo(self._tmp_path)
         self._source_branch = source_branch
         self._target_branch = target_branch
+        """         
         self._feature_branch = None
         self._unique_feature_branch_name = ""
 
         self._initialize_repo(repo_url)
+        """
 
         # Initializing the attributes for the merge conflicts
         self._unmerged_filepaths = []
@@ -48,22 +51,8 @@ class GitHandler:
 
         self._run_workflow()
 
-    def _initialize_repo(self, repo_url: str):
-        """
-        Initializes and clones the repositories and creates a feature branch.
-
-        This method checks if the upstream repository or the downstream repository already exists in 
-        the temporary directory. If they do, it cleans up the temporary directory. It then clones the 
-        upstream repository and the downstream repository, creates a remote for the upstream repository 
-        in the downstream repository, and fetches from the remote.
-
-        It also creates a unique name for the feature branch, creates the feature branch in the 
-        downstream repository, and checks out the feature branch.
-
-        Args:
-            repo_url (str): The URL of the downstream repository.
-            upstream_url (str): The URL of the upstream repository.
-        """
+        """     
+        def _initialize_repo(self, repo_url: str):
         if os.path.exists(self._tmp_path):
             print("Cleaning up the .tmp directory ...")
             self._clean_up()
@@ -76,7 +65,7 @@ class GitHandler:
         self._feature_branch = self._repo.create_head(self._unique_feature_branch_name)
         self._repo.git.checkout(self._feature_branch)
         print("Creatured feature branch.")
-        print("active branch: " + self._repo.active_branch.name)
+        print("active branch: " + self._repo.active_branch.name) """
 
     def _run_workflow(self):
         """
@@ -122,21 +111,15 @@ class GitHandler:
                     "feature_branch"
                     )
                 ] #to make the file content comparable using the cache
-
+    """
     def _clean_up(self):
-        """
-        Cleans up the temporary directory.
-
-        This method iterates over the directories and files in the temporary directory, changes their 
-        permissions to make them readable, writable, and executable by the user, and then removes the 
-        temporary directory.
-        """
         for root, dirs, files in os.walk(os.path.join(os.path.dirname(__file__), ".tmp")):
             for dir in dirs:
                 os.chmod(os.path.join(root, dir), stat.S_IRWXU)
             for file in files:
                 os.chmod(os.path.join(root, file), stat.S_IRWXU)
         shutil.rmtree(os.path.join(os.path.dirname(__file__), ".tmp"))
+    """
     
     def _try_to_merge(self):
         """
@@ -149,7 +132,7 @@ class GitHandler:
             bool: False if the merge is successful, True if a GitCommandError is raised.
         """
         try:
-            self._repo.git.merge(self._repo.refs.main)
+            self._repo.git.merge(self._repo.refs.main) #TODO Source Branch verwenden
             return False
         except GitCommandError as e:
             return True

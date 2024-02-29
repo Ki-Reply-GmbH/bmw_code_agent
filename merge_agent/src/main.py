@@ -1,6 +1,6 @@
 import os
-from git_handler import GitHandler
-from agent import Agent
+from merge_agent.src.merge_git_handler import MergeGitHandler
+#from merge_agent.src.agent import Agent
 
 git_username = os.environ["GIT_USERNAME"]
 git_access_token = os.environ["GIT_ACCESS_TOKEN"]
@@ -11,10 +11,11 @@ repo = "pull_request_merge_conflict"
 source_branch = "main"
 target_branch = "feature"
 
-gi = GitHandler(f"https://{git_username}:{git_access_token}@github.com/{owner}/{repo}.git",
+gi = MergeGitHandler("C:\\Users\\t.kubera\\dev\\bmw\\bmw_code_agent\\.tmp",
                 source_branch,
                 target_branch
                 )
+"""
 ag = Agent(gi._repo)
 
 
@@ -28,7 +29,7 @@ for i, file_path in enumerate(gi.get_unmerged_filepaths()):
 ag.write_responses()
 ag.make_commit_msg()
 ag.git_actions()
-
+"""
 
 # Temporäer Code-Abschnitt. Wird später in die Controller-Klasse verschoben
 def save_to_file(attribute1, attribute2, attribute3):
