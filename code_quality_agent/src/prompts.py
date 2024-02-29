@@ -11,7 +11,9 @@ Proceed as follows:
 conventions in the code.
 2. Evaluate the linter suggestions
 3. Apply changes that improve code quality and maintain the current coding \
-convention if one is found.
+convention if one is found. Don't add placeholders in your code, even if the \
+linter recommendations suggest it. The source code must be compilable or \
+interpretable.
 4. Return a json object with 2 keys, "improved_source_code" and "explanation". \
 
 ####
