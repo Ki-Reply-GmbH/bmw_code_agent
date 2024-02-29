@@ -10,8 +10,8 @@ print()
 agent = LintAgent(directory="./tests", language="java")
 print(agent)
 
-#print("Improving code...")
-#agent.improve_code()
+print("Improving code...")
+agent.improve_code()
 
 #print("Writing changes...")
 #agent.write_changes()

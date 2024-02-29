@@ -87,7 +87,7 @@ class LintAgent:
             with open(file_path, "r") as file:
                 code = file.read()
             linter_suggestions = task_description
-            prompt = lint_prompt.format(code=code, linter_suggestions=linter_suggestions)
+            prompt = lint_prompt.format(source_code=code, linter_suggestions=linter_suggestions)
             print("Calling OpenAI API for " + file_path + "...")
             improved_code = get_completion(prompt)
             self.improved_code.append((file_path, improved_code))
