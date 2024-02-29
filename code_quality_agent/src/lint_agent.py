@@ -34,7 +34,7 @@ class LintAgent:
         self.directory = directory
         self.raw_stats = ""
         self.tasks = []
-        self.improved_code = []
+        self.improved_source_code = []
         self.language = language
 
         self.check_code()
@@ -96,17 +96,17 @@ class LintAgent:
             print("Calling OpenAI API for " + file_path + "...")
             print(prompt)
             print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-            improved_code = get_completion(prompt)
-            self.improved_code.append((file_path, improved_code))
+            improved_source_code = get_completion(prompt)
+            self.improved_source_code.append((file_path, improved_source_code))
 
     def write_changes(self):
         """
         Writes the improved code back to the files.
         """
-        for path, improved_code in self.improved_code:
-            improved_code = json.loads(improved_code)["improved_code"]
+        for path, improved_source_code in self.improved_source_code:
+            improved_source_code = json.loads(improved_source_code)["improved_source_code"]
             with open(path, "w") as file:
-                file.write(improved_code)
+                file.write(improved_source_code)
 
     def __str__(self):
         s = "Raw Stats:\n"
@@ -120,7 +120,7 @@ class LintAgent:
             s += f"{tup[0]}\n"
             s += f"{tup[1]}\n".encode("utf-8").decode("unicode-escape")
         s += "\nImproved Code:\n"
-        for tup in self.improved_code:
+        for tup in self.improved_source_code:
             s += f"{tup[0]}\n"
             s += str(type(tup[1]))
             s += f"{tup[1]}\n".encode("utf-8").decode("unicode-escape")
