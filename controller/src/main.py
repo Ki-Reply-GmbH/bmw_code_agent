@@ -35,7 +35,7 @@ for i, file_path in enumerate(mgh.get_unmerged_filepaths()):
     resp = mag.solve_merge_conflict()
 
 print("Committing changes...")
-mgh.write_responses(mag.get_file_paths(), mag.get_responses()) #TODO in GitHandler und hier und beim LintAgent löschen
+gi.write_responses(mag.get_file_paths(), mag.get_responses()) #TODO in GitHandler und hier und beim LintAgent löschen
 mag.make_commit_msg()
 gi.commit_changes(mag.get_file_paths(), mag.get_commit_msg())
 
