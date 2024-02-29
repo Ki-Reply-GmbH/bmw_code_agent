@@ -39,19 +39,6 @@ gi.write_responses(mag.get_file_paths(), mag.get_responses()) #TODO in GitHandle
 mag.make_commit_msg()
 gi.commit_changes(mag.get_file_paths(), mag.get_commit_msg())
 
-# Temporäer Code-Abschnitt. Soll commited werden
-def save_to_file(attribute1, attribute2, attribute3):
-    with open("tmp_explanations.txt", "w") as f:
-        f.write("\n".join(attribute1))
-
-    with open("tmp_responses.txt", "w") as f:
-        f.write("\n".join(attribute2))
-
-    with open("tmp_commit_msg.txt", "w") as f:
-        f.write(attribute3)
-
-save_to_file(mag.explanations, mag.responses, mag.commit_msg)
-
 """ Interaction with the Code Quality Agent """
 py_lag = LintAgent(directory=gi.get_tmp_path(), language="python")
 ja_lag = LintAgent(directory=gi.get_tmp_path(), language="java")
