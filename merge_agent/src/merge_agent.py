@@ -45,7 +45,7 @@ def get_completion(prompt, model="gpt-4-1106-preview", type="text"):
     )
     return response.choices[0].message.content
 
-class Agent():
+class MergeAgent():
     """
     The Agent class is designed to solve merge conflicts in a Git repository.
     It has several responsibilities:

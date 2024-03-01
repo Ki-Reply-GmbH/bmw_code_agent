@@ -1,7 +1,7 @@
 import os
 from controller.src.git_handler import GitHandler
 from merge_agent.src.merge_git_handler import MergeGitHandler
-from merge_agent.src.agent import Agent
+from merge_agent.src.merge_agent import MergeAgent
 from code_quality_agent.src.lint_agent import LintAgent
 
 """ Set up the local git repository """
@@ -25,7 +25,7 @@ gi.clone(f"https://{git_username}:{git_access_token}@github.com/{owner}/{repo}.g
 
 """ Interaction with the Merge Agent"""
 mgh = MergeGitHandler()
-mag = Agent(gi._repo)
+mag = MergeAgent(gi._repo)
 
 
 for i, file_path in enumerate(mgh.get_unmerged_filepaths()):
@@ -35,7 +35,7 @@ for i, file_path in enumerate(mgh.get_unmerged_filepaths()):
     resp = mag.solve_merge_conflict()
 
 print("Committing changes...")
-gi.write_responses(mag.get_file_paths(), mag.get_responses()) #TODO in GitHandler und hier und beim LintAgent löschen
+gi.write_responses(mag.get_file_paths(), mag.get_responses())
 mag.make_commit_msg()
 gi.commit_changes(mag.get_file_paths(), mag.get_commit_msg())
 
@@ -45,15 +45,12 @@ ja_lag = LintAgent(directory=gi.get_tmp_path(), language="java")
 
 print("Improving code...")
 py_lag.improve_code()
-ja_lag.improve_code()
 
 print("Writing changes...")
 py_lag.write_changes()
-ja_lag.write_changes()
 
 print(py_lag)
 print()
-print(ja_lag)
 
 print("Committing changes...")
 py_lag.make_commit_msg()
