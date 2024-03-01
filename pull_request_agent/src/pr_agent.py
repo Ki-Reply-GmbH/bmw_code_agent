@@ -37,6 +37,7 @@ class PRAgent:
             "code_changes": [],
             "commit_message": "",
         }
+        self.response = ""
     
     def set_memory(self, agent, files_changed, code_changes, commit_message):
         if agent == "merge_agent":
@@ -47,6 +48,19 @@ class PRAgent:
             self.memory_cq_agent["files_changed"] = files_changed
             self.memory_cq_agent["code_changes"] = code_changes
             self.memory_cq_agent["commit_message"] = commit_message
+
+    def make_summary(self):
+        response = get_completion(
+            prompts.pr_user_prompt.format(
+                memory_merge_agent=self.memory_merge_agent,
+                memory_cq_agent=self.memory_cq_agent
+                )
+            )
+        self.response = response
+
+    def write_response(self):
+        with open("response.txt", "w") as f:
+            f.write(self.response)
 
     def __str__(self):
         return f"Merge Agent Memory: {self.memory_merge_agent}\nCode Quality Agent Memory: {self.memory_cq_agent}"

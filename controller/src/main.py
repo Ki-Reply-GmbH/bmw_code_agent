@@ -79,3 +79,6 @@ pr_agent.set_memory(
 )
 
 print(pr_agent)
+
+pr_agent.make_summary()
+pr_agent.write_response()
