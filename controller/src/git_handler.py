@@ -67,7 +67,7 @@ class GitHandler:
             shutil.rmtree(cls._tmp_path)
 
     @classmethod
-    def commit_changes(cls, file_paths, commit_msg):
+    def commit_and_push(cls, file_paths, commit_msg):
         """
         Performs Git actions such as add, commit, and push.
 

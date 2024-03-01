@@ -41,7 +41,7 @@ for i, file_path in enumerate(mgh.get_unmerged_filepaths()):
 print("Committing changes...")
 gi.write_responses(mag.get_file_paths(), mag.get_responses())
 mag.make_commit_msg()
-gi.commit_changes(mag.get_file_paths(), mag.get_commit_msg())
+gi.commit_and_push(mag.get_file_paths(), mag.get_commit_msg())
 
 """ Update the Pull Request Agent's memory """
 pr_agent.set_memory(
@@ -68,7 +68,7 @@ print("Committing changes...")
 py_lag.make_commit_msg()
 print("File paths:\n" + str(py_lag.get_file_paths()))
 print("Commit message:\n" + py_lag.get_commit_msg())
-gi.commit_changes(py_lag.get_file_paths(), py_lag.get_commit_msg())
+gi.commit_and_push(py_lag.get_file_paths(), py_lag.get_commit_msg())
 
 """" Update the Pull Request Agent's memory """
 pr_agent.set_memory(
@@ -77,5 +77,3 @@ pr_agent.set_memory(
     py_lag.get_responses(),
     py_lag.get_commit_msg()
 )
-
-""" Push the changes to the remote repository """
