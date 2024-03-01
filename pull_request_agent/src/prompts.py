@@ -15,8 +15,8 @@ these changes.
 5. **Summary of Changes**: Briefly describe the modifications made in the PR. \
 If it's a large PR, consider breaking down the changes into categories or modules.
 
-When reviewing merge requests, it's crucial to have sufficient context and details to
-generate an informative summary. If a merge request lacks these essentials, leading to an
+When reviewing PRs, it's crucial to have sufficient context and details to
+generate an informative summary. If a PR lacks these essentials, leading to an
 absence of changes or unclear intentions, I will respond with "No summary available."
 In such cases, I'll clearly explain why a summary cannot be provided. This approach ensures
 both clarity and adherence to the standards of a quality code review process.
