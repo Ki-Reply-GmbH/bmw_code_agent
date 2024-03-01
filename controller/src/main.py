@@ -19,7 +19,9 @@ target_branch = "feature"
 gi = GitHandler()
 gi.initialize(
     source_branch,
-    target_branch
+    target_branch,
+    owner,
+    repo
     )
 gi.clean_up()
 gi.clone(f"https://{git_username}:{git_access_token}@github.com/{owner}/{repo}.git")

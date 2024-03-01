@@ -14,6 +14,8 @@ from uuid import uuid4
 class GitHandler:
     _tmp_path = None
     _repo = None
+    _owner = ""
+    _repo_name = ""
     _source_branch = None
     _target_branch = None
     _feature_branch = None
@@ -23,7 +25,13 @@ class GitHandler:
         return self._tmp_path
 
     @classmethod
-    def initialize(cls, source_branch: str, target_branch: str):
+    def initialize(
+        cls,
+        source_branch: str,
+        target_branch: str,
+        owner: str,
+        repo_name: str
+        ):
         project_root_dir = os.path.dirname(
             os.path.dirname(
                 os.path.dirname(
@@ -35,6 +43,8 @@ class GitHandler:
         print("Temporary directory: " + cls._tmp_path)
         cls._source_branch = source_branch
         cls._target_branch = target_branch
+        cls._owner = owner
+        cls._repo_name = repo_name
 
     @classmethod
     def clone(cls, repo_url: str):
