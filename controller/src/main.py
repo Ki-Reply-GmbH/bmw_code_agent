@@ -77,3 +77,5 @@ pr_agent.set_memory(
     py_lag.get_responses(),
     py_lag.get_commit_msg()
 )
+
+print(pr_agent)

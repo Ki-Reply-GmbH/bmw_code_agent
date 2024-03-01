@@ -25,5 +25,14 @@ code review service configuration.
 """
 
 pr_user_prompt = """\
+There are two commits that you should merge, created by a merge agent or a \
+code quality agent, separated by ####. 
+If one of the two commit information sections is empty, don't mention that the \
+commit has no information, just ignore it.
 
+Commit Merge Agent:
+{memory_merge_agent}
+####
+Commit Code Quality Agent:
+{memory_cq_agent}
 """

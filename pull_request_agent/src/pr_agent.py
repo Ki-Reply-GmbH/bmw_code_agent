@@ -47,3 +47,6 @@ class PRAgent:
             self.memory_cq_agent["files_changed"] = files_changed
             self.memory_cq_agent["code_changes"] = code_changes
             self.memory_cq_agent["commit_message"] = commit_message
+
+    def __str__(self):
+        return f"Merge Agent Memory: {self.memory_merge_agent}\nCode Quality Agent Memory: {self.memory_cq_agent}"
