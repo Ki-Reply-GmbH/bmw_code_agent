@@ -1,5 +1,6 @@
 import openai
 import os
+import pull_request_agent.src.prompts as prompts
 
 openai.api_key = os.environ["OPENAI_API_KEY"]
 def get_completion(prompt, model="gpt-4-1106-preview", type="text"):
@@ -9,7 +10,7 @@ def get_completion(prompt, model="gpt-4-1106-preview", type="text"):
     messages = [
         {
             "role": "system",
-            "content": "You are a system designed to improve code quality."
+            "content": prompts.pr_system_prompt
         },
         {
             "role": "user",
@@ -26,4 +27,13 @@ def get_completion(prompt, model="gpt-4-1106-preview", type="text"):
 
 class PRAgent:
     def __init__(self):
-        pass
+        self.memory_merge_agent = {
+            "files_changed": [],
+            "code_changes": [],
+            "commit_message": "",
+        }
+        self.memory_cq_agent = {
+            "files_changed": [],
+            "code_changes": [],
+            "commit_message": "",
+        }
