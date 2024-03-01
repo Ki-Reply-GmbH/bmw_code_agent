@@ -26,8 +26,14 @@ class PRGitHandler(GitHandler):
             }
         resp = requests.patch(url, data=json.dumps(data), headers=headers)
 
+        print("owner: " + self._owner)
+        print("repo_name: " + self._repo_name)
+        print("pr_number: " + str(self._pr_number))
+        print("token: " + self._token)
+        print("url: " + url)
+
         if resp.status_code == 200:
             return resp.json()
         else:
             print(f"Request failed with status code {resp.status_code}")
-            return None
+            return resp
