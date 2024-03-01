@@ -69,3 +69,13 @@ py_lag.make_commit_msg()
 print("File paths:\n" + str(py_lag.get_file_paths()))
 print("Commit message:\n" + py_lag.get_commit_msg())
 gi.commit_changes(py_lag.get_file_paths(), py_lag.get_commit_msg())
+
+"""" Update the Pull Request Agent's memory """
+pr_agent.set_memory(
+    "cq_agent",
+    py_lag.get_file_paths(),
+    py_lag.get_responses(),
+    py_lag.get_commit_msg()
+)
+
+""" Push the changes to the remote repository """

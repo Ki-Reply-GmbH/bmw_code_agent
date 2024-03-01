@@ -62,6 +62,18 @@ class LintAgent:
             file_paths.append(task)
         return file_paths
 
+    def get_responses(self):
+        """
+        Returns the file paths of the files with merge conflicts.
+
+        Returns:
+            list of str: The file paths of the files with merge conflicts.
+        """
+        responses = []
+        for _, response in self.tasks:
+            responses.append(response)
+        return responses
+
     def check_code(self):
         """
         Runs the appropriate linter on the directory and stores the output in raw_stats.
