@@ -3,6 +3,7 @@ from controller.src.git_handler import GitHandler
 from merge_agent.src.merge_git_handler import MergeGitHandler
 from merge_agent.src.merge_agent import MergeAgent
 from code_quality_agent.src.lint_agent import LintAgent
+from pull_request_agent.src.pr_agent import PRAgent
 
 """ Set up the local git repository """
 
@@ -23,6 +24,9 @@ gi.initialize(
 gi.clean_up()
 gi.clone(f"https://{git_username}:{git_access_token}@github.com/{owner}/{repo}.git")
 
+""" Initialize with the Pull Request Agent """
+pr_agent = PRAgent()
+
 """ Interaction with the Merge Agent"""
 mgh = MergeGitHandler()
 mag = MergeAgent(gi._repo)
@@ -38,6 +42,14 @@ print("Committing changes...")
 gi.write_responses(mag.get_file_paths(), mag.get_responses())
 mag.make_commit_msg()
 gi.commit_changes(mag.get_file_paths(), mag.get_commit_msg())
+
+""" Update the Pull Request Agent's memory """
+pr_agent.set_memory(
+    "merge_agent",
+    mag.get_file_paths(),
+    mag.get_responses(),
+    mag.get_commit_msg()
+)
 
 """ Interaction with the Code Quality Agent """
 py_lag = LintAgent(directory=gi.get_tmp_path(), language="python")

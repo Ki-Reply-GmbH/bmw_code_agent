@@ -37,3 +37,13 @@ class PRAgent:
             "code_changes": [],
             "commit_message": "",
         }
+    
+    def set_memory(self, agent, files_changed, code_changes, commit_message):
+        if agent == "merge_agent":
+            self.memory_merge_agent["files_changed"] = files_changed
+            self.memory_merge_agent["code_changes"] = code_changes
+            self.memory_merge_agent["commit_message"] = commit_message
+        elif agent == "cq_agent":
+            self.memory_cq_agent["files_changed"] = files_changed
+            self.memory_cq_agent["code_changes"] = code_changes
+            self.memory_cq_agent["commit_message"] = commit_message
