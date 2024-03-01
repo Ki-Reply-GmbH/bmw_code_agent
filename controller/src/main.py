@@ -7,11 +7,10 @@ from pull_request_agent.src.pr_agent import PRAgent
 
 """ Set up the local git repository """
 
-git_username = os.environ["GIT_USERNAME"]
-git_access_token = os.environ["GIT_ACCESS_TOKEN"]
-
 # Arguments
+git_user = os.environ["GIT_USERNAME"]
 owner = "TimoKubera"
+token = os.environ["GIT_ACCESS_TOKEN"]
 repo = "pull_request_merge_conflict"
 source_branch = "main"
 target_branch = "feature"
@@ -20,11 +19,13 @@ gi = GitHandler()
 gi.initialize(
     source_branch,
     target_branch,
+    git_user,
     owner,
+    token,
     repo
     )
 gi.clean_up()
-gi.clone(f"https://{git_username}:{git_access_token}@github.com/{owner}/{repo}.git")
+gi.clone()
 
 """ Initialize with the Pull Request Agent """
 pr_agent = PRAgent()
@@ -85,3 +86,6 @@ print(pr_agent)
 pr_agent.make_summary()
 pr_agent.make_title()
 pr_agent.write_response()
+
+#TODO dynamisch ermitteln
+pr_number = 2

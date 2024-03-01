@@ -15,6 +15,7 @@ class GitHandler:
     _tmp_path = None
     _repo = None
     _owner = ""
+    _token = ""
     _repo_name = ""
     _source_branch = None
     _target_branch = None
@@ -29,7 +30,9 @@ class GitHandler:
         cls,
         source_branch: str,
         target_branch: str,
+        git_user: str,
         owner: str,
+        token: str,
         repo_name: str
         ):
         project_root_dir = os.path.dirname(
@@ -43,12 +46,22 @@ class GitHandler:
         print("Temporary directory: " + cls._tmp_path)
         cls._source_branch = source_branch
         cls._target_branch = target_branch
+        cls._git_user = git_user
         cls._owner = owner
+        cls._token = token
         cls._repo_name = repo_name
 
     @classmethod
-    def clone(cls, repo_url: str):
-        cls._repo = Repo.clone_from(repo_url, cls._tmp_path)
+    def clone(cls):
+        cls._repo = Repo.clone_from(
+            "https://{git_username}:{git_access_token}@github.com/{owner}/{repo}.git".format(
+                git_username=cls._git_user,
+                git_access_token=cls._token,
+                owner=cls._owner,
+                repo=cls._repo_name
+            ),
+            cls._tmp_path
+            )
         # Feature Branch soll aus der target branch erstellt werden,
         # weil hier der Pull Request erstellt wurde.
         cls._repo.git.checkout(cls._target_branch)
