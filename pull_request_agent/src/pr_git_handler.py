@@ -1,4 +1,5 @@
 import requests
+import json
 from controller.src.git_handler import GitHandler
 
 class PRGitHandler(GitHandler):
@@ -9,4 +10,24 @@ class PRGitHandler(GitHandler):
         return self._pr_number
     
     def update_pull_request(self, title: str, body: str):
-        pass
+        data = {
+            "title": title,
+            "body": body
+        }
+        url = "https://github.com/{owner}/{repo_name}/pull/{pr_number}".format(
+            owner=self._owner,
+            repo_name=self._repo_name,
+            pr_number=self._pr_number
+        )
+        headers = {
+            "Content-type": "application/json",
+            "Accept": "application/json",
+            "Authorization": "token {token}".format(token=self._token)
+            }
+        resp = requests.patch(url, data=json.dumps(data), headers=headers)
+
+        if resp.status_code == 200:
+            return resp.json()
+        else:
+            print(f"Request failed with status code {resp.status_code}")
+            return None

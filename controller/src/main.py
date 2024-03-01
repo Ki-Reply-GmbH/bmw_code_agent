@@ -1,6 +1,7 @@
 import os
 from controller.src.git_handler import GitHandler
 from merge_agent.src.merge_git_handler import MergeGitHandler
+from pull_request_agent.src.pr_git_handler import PRGitHandler
 from merge_agent.src.merge_agent import MergeAgent
 from code_quality_agent.src.lint_agent import LintAgent
 from pull_request_agent.src.pr_agent import PRAgent
@@ -87,5 +88,9 @@ pr_agent.make_summary()
 pr_agent.make_title()
 pr_agent.write_response()
 
+print("Updating pull request...")
 #TODO dynamisch ermitteln
 pr_number = 2
+pr_gi = PRGitHandler(pr_number)
+resp = pr_gi.update_pull_request(pr_agent.get_title(), pr_agent.get_summary())
+print(resp)

@@ -44,6 +44,12 @@ class PRAgent:
         self.response = ""
         self.title = ""
     
+    def get_summary(self):
+        return self.response
+    
+    def get_title(self):
+        return self.title
+
     def set_memory(self, agent, files_changed, code_changes, commit_message):
         if agent == "merge_agent":
             self.memory_merge_agent["files_changed"] = files_changed
