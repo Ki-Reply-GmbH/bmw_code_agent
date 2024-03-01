@@ -3,14 +3,18 @@ import os
 import pull_request_agent.src.prompts as prompts
 
 openai.api_key = os.environ["OPENAI_API_KEY"]
-def get_completion(prompt, model="gpt-4-1106-preview", type="text"):
+def get_completion(
+        prompt,
+        system_prompt=prompts.pr_system_prompt,
+        model="gpt-4",
+        type="text"):
     """
     Sends a prompt to the OpenAI API and returns the AI"s response.
     """
     messages = [
         {
             "role": "system",
-            "content": prompts.pr_system_prompt
+            "content": system_prompt
         },
         {
             "role": "user",
@@ -38,6 +42,7 @@ class PRAgent:
             "commit_message": "",
         }
         self.response = ""
+        self.title = ""
     
     def set_memory(self, agent, files_changed, code_changes, commit_message):
         if agent == "merge_agent":
@@ -57,9 +62,17 @@ class PRAgent:
                 )
             )
         self.response = response
+    
+    def make_title(self):
+        response = get_completion(
+            prompt=self.response,
+            system_prompt=prompts.pr_title_system_prompt,
+        )
+        self.title = response
 
     def write_response(self):
         with open("response.txt", "w") as f:
+            f.write(self.title + "\n")
             f.write(self.response)
 
     def __str__(self):
