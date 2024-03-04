@@ -87,6 +87,19 @@ class LintAgent:
             self.raw_stats = result.stdout.decode("utf-8")
         elif self.language == "java":
             result = subprocess.run(
+                [os.path.join(
+                    os.path.expanduser("~"),
+                    "pmd-bin-7.0.0-rc4/bin/pmd"
+                    ),
+                 "check",
+                 "-d", self.directory,
+                 "-R", "rulesets/java/quickstart.xml"],  #TODO env erstellen
+                capture_output=True,
+                text=True
+                )
+            self.raw_stats = result.stdout
+        elif self.language == "java-local":
+            result = subprocess.run(
                 ["C:\\pmd-bin-7.0.0-rc4\\bin\\pmd.bat",
                  "check",
                  "-d", self.directory,
