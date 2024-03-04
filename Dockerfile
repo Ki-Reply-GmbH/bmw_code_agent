@@ -1,6 +1,6 @@
 FROM python:3.11-slim
-COPY ./ /ki_repy_merge_conflict_resolver/
-WORKDIR /ki_repy_merge_conflict_resolver
+COPY ./ /bmw_code_agent/
+WORKDIR /bmw_code_agent
 ARG OPENAI_API_KEY
 ARG GIT_USERNAME
 ARG GIT_ACCESS_TOKEN
@@ -13,4 +13,4 @@ RUN apt-get -y install git
 RUN git config --global user.email "timokubera@yahoo.com"
 RUN git config --global user.name "Timo Kubera"
 RUN pip3 install -r requirements.txt
-CMD ["python3", "src/main.py"]
+CMD ["python3", "-m", "controller.src.main"]
