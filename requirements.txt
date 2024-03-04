@@ -1,0 +1,5 @@
+GitPython==3.1.42
+openai==1.13.3
+pandas==2.2.1
+pytest==6.2.5
+Requests==2.31.0
