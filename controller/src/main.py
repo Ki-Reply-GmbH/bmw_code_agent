@@ -92,5 +92,5 @@ print("Updating pull request...")
 #TODO dynamisch ermitteln
 pr_number = 2
 pr_gi = PRGitHandler(pr_number)
-resp = pr_gi.update_pull_request(pr_agent.get_title(), pr_agent.get_summary())
+resp = pr_gi.comment_pull_request(pr_agent.get_summary())
 print(resp)

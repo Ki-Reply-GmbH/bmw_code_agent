@@ -9,14 +9,36 @@ class PRGitHandler(GitHandler):
     def get_pr_number(self):
         return self._pr_number
     
+    def comment_pull_request(self, comment: str):
+        data = {
+            "body": comment
+        }
+        url = "https://api.github.com/repos/{owner}/{repo}/issues/{issue_number}/comments".format(
+            owner=self._owner,
+            repo=self._repo_name,
+            issue_number=self._pr_number  # Pull requests are considered as issues in terms of comments
+        )
+        headers = {
+            "Content-type": "application/json",
+            "Accept": "application/json",
+            "Authorization": "token {token}".format(token=self._token)
+        }
+        resp = requests.post(url, data=json.dumps(data), headers=headers)
+        
+        if resp.status_code == 201:
+            return resp.json()
+        else:
+            print(f"Request failed with status code {resp.status_code}")
+            return resp.text
+
     def update_pull_request(self, title: str, body: str):
         data = {
             "title": title,
             "body": body
         }
-        url = "https://github.com/{owner}/{repo_name}/pull/{pr_number}".format(
+        url = "https://api.github.com/repos/{owner}/{repo}/pulls/{pr_number}".format(
             owner=self._owner,
-            repo_name=self._repo_name,
+            repo=self._repo_name,
             pr_number=self._pr_number
         )
         headers = {
@@ -36,4 +58,4 @@ class PRGitHandler(GitHandler):
             return resp.json()
         else:
             print(f"Request failed with status code {resp.status_code}")
-            return resp
+            return resp.text
