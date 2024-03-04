@@ -1,0 +1,39 @@
+name: Main Workflow
+on:
+  workflow_dispatch:
+    branches:
+      - master
+      - develop
+      - feature
+env:
+  REGISTRY: ghcr.io
+  DOCKER_USERNAME: davide-gualandris
+  IMAGE_NAME: coding-mentor
+  VERSION: 1.0.0-SNAPSHOT
+jobs:
+  BuildAndDeploy:
+    name: Build, Push to ECR and Deploy to k8s
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Log in to the Container registry
+        uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ env.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Build and push Docker image
+        uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
+        with:
+          context: .
+          push: true
+          tags: ${{ env.REGISTRY }}/riverland-reply/optima/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
+            GIT_USERNAME=${{ secrets.GIT_USERNAME }}
+            GIT_ACCESS_TOKEN=${{ secrets.GIT_ACCESS_TOKEN }}
