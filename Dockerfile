@@ -16,12 +16,8 @@ RUN git config --global user.name "Timo Kubera"
 RUN pip3 install -r requirements.txt
 
 # Install pmd for java code analysis
-RUN export tmp_path=$(pwd)
-RUN cd $HOME
 RUN wget https://github.com/pmd/pmd/releases/download/pmd_releases%2F7.0.0-rc4/pmd-dist-7.0.0-rc4-bin.zip
 RUN unzip pmd-dist-7.0.0-rc4-bin.zip
-RUN alias pmd="$HOME/pmd-bin-7.0.0-rc4/bin/pmd"
 CMD ["python3", "-m", "controller.src.main"]
-
 # Mit Davide sprechen wegen Open AI API key
 # Reply Mail Adresse verwenden, nicht private

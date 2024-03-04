@@ -86,10 +86,12 @@ class LintAgent:
                 )
             self.raw_stats = result.stdout.decode("utf-8")
         elif self.language == "java":
+            current_dir = os.path.dirname(os.path.realpath(__file__))
+            pmd_path = os.path.join(current_dir, "../../pmd-bin-7.0.0-rc4/bin/pmd")
             result = subprocess.run(
                 [os.path.join(
-                    os.path.expanduser("~"),
-                    "pmd-bin-7.0.0-rc4/bin/pmd"
+                    current_dir,
+                    pmd_path
                     ),
                  "check",
                  "-d", self.directory,
