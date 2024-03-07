@@ -10,8 +10,10 @@ from pull_request_agent.src.pr_agent import PRAgent
 
 # Arguments
 git_user = os.environ["GIT_USERNAME"]
-owner = "TimoKubera"
 token = os.environ["GIT_ACCESS_TOKEN"]
+
+# Information extracted from webhook
+owner = "TimoKubera"
 repo = "pull_request_merge_conflict"
 source_branch = "main"
 target_branch = "feature"
@@ -56,30 +58,32 @@ pr_agent.set_memory(
 )
 
 """ Interaction with the Code Quality Agent """
-py_lag = LintAgent(directory=gi.get_tmp_path(), language="python")
-ja_lag = LintAgent(directory=gi.get_tmp_path(), language="java")
+print("Interaction with the Code Quality Agent...")
+#py_lag = LintAgent(directory=gi.get_tmp_path(), language="python")
+ja_lag = LintAgent(directory=gi.get_tmp_path(), language="java-local")
 
 print("Improving code...")
-py_lag.improve_code()
+ja_lag.improve_code()
 
 print("Writing changes...")
-py_lag.write_changes()
+ja_lag.write_changes()
 
-print(py_lag)
+print(ja_lag)
 print()
 
 print("Committing changes...")
-py_lag.make_commit_msg()
-print("File paths:\n" + str(py_lag.get_file_paths()))
-print("Commit message:\n" + py_lag.get_commit_msg())
-gi.commit_and_push(py_lag.get_file_paths(), py_lag.get_commit_msg())
+ja_lag.make_commit_msg()
+print("File paths:\n" + str(ja_lag.get_file_paths()))
+print("Commit message:\n" + ja_lag.get_commit_msg())
+gi.commit_and_push(ja_lag.get_file_paths(), ja_lag.get_commit_msg())
 
 """" Update the Pull Request Agent's memory """
+print("Updating the Pull Request Agent's memory...")
 pr_agent.set_memory(
     "cq_agent",
-    py_lag.get_file_paths(),
-    py_lag.get_responses(),
-    py_lag.get_commit_msg()
+    ja_lag.get_file_paths(),
+    ja_lag.get_responses(),
+    ja_lag.get_commit_msg()
 )
 
 print(pr_agent)

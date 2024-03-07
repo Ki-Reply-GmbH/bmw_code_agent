@@ -120,7 +120,7 @@ class LintAgent:
             pattern = r"--- (.*?)\s.*?@@.*?\n(.*?)would reformat"
             matches = re.findall(pattern, self.raw_stats, re.DOTALL)
             self.tasks = matches
-        elif self.language == "java":
+        elif self.language == "java" or self.language == "java-local":
             lines = self.raw_stats.split("\n")
             # Dictionary verwenden, damit kein Dateipfad mehrfach vorkommt.
             tmp_dict = defaultdict(list)
