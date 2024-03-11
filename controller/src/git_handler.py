@@ -64,7 +64,7 @@ class GitHandler:
             )
         # Feature Branch soll aus der target branch erstellt werden,
         # weil hier der Pull Request erstellt wurde.
-        cls._repo.git.checkout(cls._target_branch)
+        cls._repo.git.checkout(cls._source_branch)
         cls._unique_feature_branch_name = datetime.now().strftime("%Y%m-%d%H-%M%S-") + str(uuid4())
         cls._feature_branch = cls._repo.create_head(cls._unique_feature_branch_name)
         cls._repo.git.checkout(cls._feature_branch)

@@ -9,10 +9,12 @@ from pull_request_agent.src.pr_agent import PRAgent
 from controller.src.webhooks.webhook_handler import WebhookHandler
 
 LOGGER = logging.getLogger(__name__)
+logging.basicConfig(level=logging.DEBUG)
 
 def main():
     """ Set up the local git repository """
 
+    LOGGER.debug("Retrieving webhooks ...")
     # Arguments
     git_user = os.environ["GIT_USERNAME"]
     token = os.environ["GIT_ACCESS_TOKEN"]
@@ -28,7 +30,7 @@ def main():
     target_branch = wh.target_branches[0]
     pr_number = wh.pr_numbers[0]
     
-    LOGGER.debug("Retrieved information from webhook: %s, %s, %s, %s, %s",
+    LOGGER.debug("Retrieved information from webhook:\n%s\n%s\n%s\n%s\n%s\n",
                  owner,
                  repo,
                  source_branch,

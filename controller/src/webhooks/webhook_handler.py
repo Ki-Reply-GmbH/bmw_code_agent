@@ -42,7 +42,7 @@ class WebhookHandler:
                 str(pr_number)
             )
 
-            if event_tuple not in self._existing_events:
+            if event_tuple not in self._previous_events:
                 # Add the event to the list of events; skip if it was already processed
                 self.owners.append(owner)
                 self.repos.append(repo)
