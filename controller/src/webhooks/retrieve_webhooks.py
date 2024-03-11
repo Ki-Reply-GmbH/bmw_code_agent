@@ -1,3 +1,4 @@
+#TODO Datei löschen, wenn nicht mehr benötigt
 import requests
 import json
 import csv
