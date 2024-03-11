@@ -4,8 +4,8 @@ import requests
 
 class WebhookHandler:
     def __init__(self, webhook_url, csv_file_path):
-        self.webhook_url = webhook_url
-        self.csv_file_path
+        self._webhook_url = webhook_url
+        self._csv_file_path = csv_file_path
         self._data = self._read_webhook()
         self._pull_request_events = self._extract_pull_request_events()
         self._previous_events = self._read_previous_events()
