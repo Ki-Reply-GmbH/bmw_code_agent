@@ -26,6 +26,14 @@ def main():
     repo = wh._repos[0]
     source_branch = wh._source_branches[0]
     target_branch = wh._target_branches[0]
+    
+    LOGGER.debug("Retrieved information from webhook: %s, %s, %s, %s, %s",
+                 owner,
+                 repo,
+                 source_branch,
+                 target_branch,
+                 wh._pr_numbers[0]
+                )
 
     gi = GitHandler()
     gi.initialize(

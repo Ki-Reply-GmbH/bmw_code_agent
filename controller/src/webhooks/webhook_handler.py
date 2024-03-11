@@ -31,7 +31,7 @@ class WebhookHandler:
             target_branch = event["pull_request"]["base"]["ref"]
             pr_number = event["number"]
             event_tuple = (
-                self.webhook_url,
+                self._webhook_url,
                 owner,
                 repo,
                 source_branch,
@@ -41,14 +41,14 @@ class WebhookHandler:
 
             if event_tuple not in self._existing_events:
                 # Add the event to the list of events; skip if it was already processed
-                self._owners.append(owner)
-                self._repos.append(repo)
-                self._source_branches.append(source_branch)
-                self._target_branches.append(target_branch)
-                self._pr_numbers.append(pr_number)
+                self.owners.append(owner)
+                self.repos.append(repo)
+                self.source_branches.append(source_branch)
+                self.target_branches.append(target_branch)
+                self.pr_numbers.append(pr_number)
 
     def _read_webhook(self):
-        req = requests.get(self.webhook_url)
+        req = requests.get(self._webhook_url)
         if req.status_code == 200:
             return req.json()
         else:
@@ -56,7 +56,7 @@ class WebhookHandler:
 
     def _extract_pull_request_events(self):
         pull_request_events = []
-        for event in self.data:
+        for event in self._data:
             if "pull_request" in event:
                 pull_request_events.append(event)
         return pull_request_events
@@ -80,11 +80,11 @@ class WebhookHandler:
                 writer = csv.writer(file)
                 writer.writerow(
                     [
-                        self.webhook_url,
-                        self._owners[i],
-                        self._repos[i],
-                        self._source_branches[i],
-                        self._target_branches[i], 
-                        self._pr_numbers[i]
+                        self._webhook_url,
+                        self.owners[i],
+                        self.repos[i],
+                        self.source_branches[i],
+                        self.target_branches[i], 
+                        self.pr_numbers[i]
                     ]
                 )
