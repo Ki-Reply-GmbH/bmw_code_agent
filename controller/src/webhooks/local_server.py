@@ -11,8 +11,8 @@ events = []
 def webhook():
     global events
     if request.method == "POST":
-        print(request.json)
-        events += [request.json]
+        print(request)
+        events += [request]
         return "sucess", 200
     elif request.method == "GET":
         return events, 200
