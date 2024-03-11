@@ -5,7 +5,7 @@ import csv
 import os
 from datetime import datetime
 
-webhook_url = "http://localhost:8080/optima/api/coding/webhook"
+webhook_url = "http://localhost:8080/optima/api/coding/webhooks"
 req = requests.get(webhook_url)
 
 push_events = []

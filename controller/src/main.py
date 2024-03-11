@@ -6,6 +6,7 @@ from pull_request_agent.src.pr_git_handler import PRGitHandler
 from merge_agent.src.merge_agent import MergeAgent
 from code_quality_agent.src.lint_agent import LintAgent
 from pull_request_agent.src.pr_agent import PRAgent
+from controller.src.webhooks.webhook_handler import WebhookHandler
 
 LOGGER = logging.getLogger(__name__)
 
@@ -16,11 +17,15 @@ def main():
     git_user = os.environ["GIT_USERNAME"]
     token = os.environ["GIT_ACCESS_TOKEN"]
 
+    # Initialize WebhookHandler
+    webhook_url = "http://localhost:8080/optima/api/coding/webhooks"
+    wh = WebhookHandler(webhook_url, "./.webhooks.csv")
+
     # Information extracted from webhook
-    owner = "TimoKubera"
-    repo = "pull_request_merge_conflict"
-    source_branch = "main"
-    target_branch = "feature"
+    owner = wh._owners[0]
+    repo = wh._repos[0]
+    source_branch = wh._source_branches[0]
+    target_branch = wh._target_branches[0]
 
     gi = GitHandler()
     gi.initialize(

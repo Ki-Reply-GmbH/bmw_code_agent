@@ -3,16 +3,17 @@ import os
 import requests
 
 class WebhookHandler:
-    def __init__(self, webhook_url):
+    def __init__(self, webhook_url, csv_file_path):
         self.webhook_url = webhook_url
+        self.csv_file_path
         self._data = self._read_webhook()
         self._pull_request_events = self._extract_pull_request_events()
-        self._owners = []
-        self._repos = []
-        self._source_branches = []
-        self._target_branches = []
-        self._pr_numbers = []
         self._previous_events = self._read_previous_events()
+        self.owners = []
+        self.repos = []
+        self.source_branches = []
+        self.target_branches = []
+        self.pr_numbers = []
 
     def _read_previous_events(self):
         if not os.path.isfile(self.csv_file_path):
@@ -60,9 +61,9 @@ class WebhookHandler:
                 pull_request_events.append(event)
         return pull_request_events
 
-    def save_to_csv(self, csv_file):
-        if not os.path.isfile(csv_file):
-            with open(csv_file, "w", newline="") as file:
+    def save_to_csv(self):
+        if not os.path.isfile(self.csv_file_path):
+            with open(self.csv_file_path, "w", newline="") as file:
                 writer = csv.writer(file)
                 writer.writerow(
                     [
@@ -75,7 +76,7 @@ class WebhookHandler:
                     ]
                 )
         for i in range(len(self._owners)):
-            with open(csv_file, "a", newline="") as file:
+            with open(self.csv_file_path, "a", newline="") as file:
                 writer = csv.writer(file)
                 writer.writerow(
                     [
