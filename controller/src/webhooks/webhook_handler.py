@@ -15,10 +15,13 @@ class WebhookHandler:
         self.target_branches = []
         self.pr_numbers = []
 
+        self._read_previous_events()
+        self._init_events()
+
     def _read_previous_events(self):
-        if not os.path.isfile(self.csv_file_path):
+        if not os.path.isfile(self._csv_file_path):
             return set()
-        with open(self.csv_file_path, "r") as file:
+        with open(self._csv_file_path, "r") as file:
             reader = csv.reader(file)
             next(reader)  # Skip the header
             return set(tuple(row) for row in reader)
@@ -62,8 +65,8 @@ class WebhookHandler:
         return pull_request_events
 
     def save_to_csv(self):
-        if not os.path.isfile(self.csv_file_path):
-            with open(self.csv_file_path, "w", newline="") as file:
+        if not os.path.isfile(self._csv_file_path):
+            with open(self._csv_file_path, "w", newline="") as file:
                 writer = csv.writer(file)
                 writer.writerow(
                     [
@@ -76,7 +79,7 @@ class WebhookHandler:
                     ]
                 )
         for i in range(len(self._owners)):
-            with open(self.csv_file_path, "a", newline="") as file:
+            with open(self._csv_file_path, "a", newline="") as file:
                 writer = csv.writer(file)
                 writer.writerow(
                     [

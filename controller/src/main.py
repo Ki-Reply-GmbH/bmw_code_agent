@@ -22,17 +22,18 @@ def main():
     wh = WebhookHandler(webhook_url, "./.webhooks.csv")
 
     # Information extracted from webhook
-    owner = wh._owners[0]
-    repo = wh._repos[0]
-    source_branch = wh._source_branches[0]
-    target_branch = wh._target_branches[0]
+    owner = wh.owners[0]
+    repo = wh.repos[0]
+    source_branch = wh.source_branches[0]
+    target_branch = wh.target_branches[0]
+    pr_number = wh.pr_numbers[0]
     
     LOGGER.debug("Retrieved information from webhook: %s, %s, %s, %s, %s",
                  owner,
                  repo,
                  source_branch,
                  target_branch,
-                 wh._pr_numbers[0]
+                 pr_number
                 )
 
     gi = GitHandler()
@@ -109,8 +110,6 @@ def main():
     pr_agent.write_response()
 
     LOGGER.debug("Updating pull request...")
-    #TODO dynamisch ermitteln
-    pr_number = 2
     pr_gi = PRGitHandler(pr_number)
     resp = pr_gi.comment_pull_request(pr_agent.get_summary())
     LOGGER.debug(resp)
