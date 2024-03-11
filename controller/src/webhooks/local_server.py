@@ -11,8 +11,12 @@ events = []
 def webhook():
     global events
     if request.method == "POST":
-        print(request)
-        events += [request]
+        event = {
+            "data": request.get_json(),  # get JSON data from request
+            "headers": dict(request.headers)  # get headers from request
+        }
+        print(event)
+        events.append(event)
         return "sucess", 200
     elif request.method == "GET":
         return events, 200
