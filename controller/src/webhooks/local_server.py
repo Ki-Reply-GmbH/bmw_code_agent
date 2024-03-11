@@ -13,12 +13,13 @@ def webhook():
     if request.method == "POST":
         event = {
             "header": dict(request.headers),  
-            "body": request.get_json()
+            "body": request.get_data().decode()
         }
-        print(event)
+        #print(event)
         events.append(event)
         return "sucess", 200
     elif request.method == "GET":
+        print(events)
         return events, 200
     else:
         abort(400)

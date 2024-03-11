@@ -3,6 +3,7 @@ import os
 import requests
 import hashlib
 import hmac
+import json
 
 class WebhookHandler:
     #TODO Check that pull request was opened, not closed.
@@ -63,10 +64,22 @@ class WebhookHandler:
     def _extract_pull_request_events(self):
         pull_request_events = []
         for event in self._data:
-            if "pull_request" in event["body"]:
+            body_dict = json.loads(event["body"])
+            if "pull_request" in body_dict and body_dict["action"] != "closed":
                 #TODO add validation that the pull request was opened, not closed
                 # And validate with the webhook secret
-                pull_request_events.append(event["body"])
+                try:
+                    print("Trying to verify signature ...")
+                    self.verify_signature(
+                        event["body"].encode("utf-8"),
+                        os.environ["GITHUB_SECRET"],
+                        event["header"]["X-Hub-Signature-256"]
+                    )
+                    pull_request_events.append(body_dict)
+                except Exception as e:
+                    print("Exception occurred while verifying signature:")
+                    print(e)
+                    continue
         return pull_request_events
 
     def save_to_csv(self):
@@ -97,7 +110,7 @@ class WebhookHandler:
                     ]
                 )
 
-    def verify_signature(payload_body, secret_token, signature_header):
+    def verify_signature(self, payload_body, secret_token, signature_header):
         """Verify that the payload was sent from GitHub by validating SHA256.
 
         Raise and return 403 if not authorized.
@@ -105,11 +118,15 @@ class WebhookHandler:
         Args:
             payload_body: original request body to verify (request.body())
             secret_token: GitHub app webhook token (WEBHOOK_SECRET)
-            signature_header: header received from GitHub (x-hub-signature-256)
+            signature_header: header received from GitHub (X-Hub-Signature-256)
         """
         if not signature_header:
-            raise Exception(status_code=403, detail="x-hub-signature-256 header is missing!")
-        hash_object = hmac.new(secret_token.encode('utf-8'), msg=payload_body, digestmod=hashlib.sha256)
+            raise Exception(status_code=403, detail="X-Hub-Signature-256 header is missing!")
+        hash_object = hmac.new(secret_token.encode("utf-8"), msg=payload_body, digestmod=hashlib.sha256)
         expected_signature = "sha256=" + hash_object.hexdigest()
+        print()
+        print("Expected signature: " + expected_signature)
+        print("Received signature: " + signature_header)
+        print()
         if not hmac.compare_digest(expected_signature, signature_header):
             raise Exception(status_code=403, detail="Request signatures didn't match!")
