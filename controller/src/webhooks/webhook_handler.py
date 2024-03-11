@@ -5,6 +5,7 @@ import hashlib
 import hmac
 
 class WebhookHandler:
+    #TODO Check that pull request was opened, not closed.
     def __init__(self, webhook_url, csv_file_path):
         self._webhook_url = webhook_url
         self._csv_file_path = csv_file_path
@@ -62,8 +63,10 @@ class WebhookHandler:
     def _extract_pull_request_events(self):
         pull_request_events = []
         for event in self._data:
-            if "pull_request" in event:
-                pull_request_events.append(event)
+            if "pull_request" in event["body"]:
+                #TODO add validation that the pull request was opened, not closed
+                # And validate with the webhook secret
+                pull_request_events.append(event["body"])
         return pull_request_events
 
     def save_to_csv(self):
