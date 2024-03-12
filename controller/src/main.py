@@ -21,7 +21,7 @@ def main(event: dict):
 
     # Initialize WebhookHandler
     webhook_url = "http://localhost:5000/optima/api/coding/webhook"
-    wh = WebhookHandler(webhook_url, "./.webhooks.csv")
+    wh = WebhookHandler(event, "./.webhooks.csv")
 
     if len(wh.owners) == 0:
         LOGGER.debug("No new webhooks.")

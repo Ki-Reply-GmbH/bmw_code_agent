@@ -7,10 +7,9 @@ import json
 
 class WebhookHandler:
     #TODO Check that pull request was opened, not closed.
-    def __init__(self, webhook_url, csv_file_path):
-        self._webhook_url = webhook_url
+    def __init__(self, event, csv_file_path):
+        self._event = event
         self._csv_file_path = csv_file_path
-        self._data = self._read_webhook()
         self._pull_request_event = self._extract_pull_request_event()
         self._previous_events = self._read_previous_events()
         self.owner = ""
@@ -30,14 +29,13 @@ class WebhookHandler:
             next(reader)  # Skip the header
             return set(tuple(row) for row in reader)
 
-    def _init_event(self, event):
-        owner = event["repository"]["owner"]["login"]
-        repo = event["repository"]["name"]
-        source_branch = event["pull_request"]["head"]["ref"]
-        target_branch = event["pull_request"]["base"]["ref"]
-        pr_number = event["number"]
+    def _init_event(self):
+        owner = self._event["repository"]["owner"]["login"]
+        repo = self._event["repository"]["name"]
+        source_branch = self._event["pull_request"]["head"]["ref"]
+        target_branch = self._event["pull_request"]["base"]["ref"]
+        pr_number = self._event["number"]
         event_tuple = (
-            self._webhook_url,
             owner,
             repo,
             source_branch,
@@ -53,25 +51,18 @@ class WebhookHandler:
             self.target_branche = target_branch
             self.pr_number = pr_number
 
-    def _read_webhook(self):
-        req = requests.get(self._webhook_url)
-        if req.status_code == 200:
-            return req.json()
-        else:
-            print("Failed to read webhook: %s", req.status_code)
-            return []
 
-    def _extract_pull_request_event(self, event):
-        body_dict = json.loads(event["body"])
+    def _extract_pull_request_event(self):
+        body_dict = json.loads(self._event["body"])
         if "pull_request" in body_dict and body_dict["action"] != "closed":
             #TODO add validation that the pull request was opened, not closed
             # And validate with the webhook secret
             try:
                 print("Trying to verify signature ...")
                 self.verify_signature(
-                    event["body"].encode("utf-8"),
+                    self._event["body"].encode("utf-8"),
                     os.environ["GIT_WEBHOOK_SECRET"],
-                    event["header"]["X-Hub-Signature-256"]
+                    self._event["header"]["X-Hub-Signature-256"]
                 )
                 return body_dict
             except Exception as e:
@@ -86,7 +77,6 @@ class WebhookHandler:
                 writer = csv.writer(file)
                 writer.writerow(
                     [
-                        "webhook_url",
                         "owner",
                         "repo",
                         "source_branch",
@@ -98,7 +88,6 @@ class WebhookHandler:
             writer = csv.writer(file)
             writer.writerow(
                 [
-                    self._webhook_url,
                     self.owner,
                     self.repo,
                     self.source_branch,
