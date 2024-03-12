@@ -23,6 +23,10 @@ def main():
     webhook_url = "http://localhost:8080/optima/api/coding/webhook"
     wh = WebhookHandler(webhook_url, "./.webhooks.csv")
 
+    if len(wh.owners) == 0:
+        LOGGER.debug("No new webhooks.")
+        return
+
     # Information extracted from webhook
     owner = wh.owners[0]
     repo = wh.repos[0]
