@@ -74,7 +74,7 @@ class WebhookHandler:
             except Exception:
                 abort(401)
         else:
-            abort(420)
+            abort(400)
 
     def save_to_csv(self):
         if not os.path.isfile(self._csv_file_path):
