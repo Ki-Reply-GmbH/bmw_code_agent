@@ -55,7 +55,7 @@ class WebhookHandler:
             self.target_branche = target_branch
             self.pr_number = pr_number
         else:
-            abort(420)
+            abort(400)
 
 
     def _extract_pull_request_event(self):
