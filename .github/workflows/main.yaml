@@ -9,7 +9,7 @@ env:
   REGISTRY: ghcr.io
   DOCKER_USERNAME: davide-gualandris
   IMAGE_NAME: coding-mentor
-  VERSION: 1.1.0-SNAPSHOT
+  VERSION: 1.0.0-SNAPSHOT
 jobs:
   BuildAndDeploy:
     name: Build, Push to ECR and Deploy to k8s
