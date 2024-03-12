@@ -4,6 +4,7 @@ import requests
 import hashlib
 import hmac
 import json
+from controller.src.main import LOGGER
 
 class WebhookHandler:
     #TODO Check that pull request was opened, not closed.
@@ -57,8 +58,15 @@ class WebhookHandler:
     def _read_webhook(self):
         req = requests.get(self._webhook_url)
         if req.status_code == 200:
+            LOGGER.debug("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+            LOGGER.debug("Request content:	")
+            LOGGER.debug(req.content)
+            LOGGER.debug("Request json:")
+            LOGGER.debug(req.json())
+            LOGGER.debug("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
             return req.json()
         else:
+            LOGGER.error("Failed to read webhook: %s", req.status_code)
             return []
 
     def _extract_pull_request_events(self):

@@ -37,3 +37,4 @@ jobs:
             OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
             GIT_USERNAME=${{ secrets.GIT_USERNAME }}
             GIT_ACCESS_TOKEN=${{ secrets.GIT_ACCESS_TOKEN }}
+            GIT_WEBHOOK_SECRET=${{ secrets.GIT_WEBHOOK_SECRET }}
