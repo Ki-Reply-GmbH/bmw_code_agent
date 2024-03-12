@@ -3,6 +3,7 @@ import os
 import hashlib
 import hmac
 import json
+from flask import abort
 
 class WebhookHandler:
     #TODO Check that pull request was opened, not closed.
@@ -41,6 +42,10 @@ class WebhookHandler:
             target_branch,
             str(pr_number)
         )
+
+        monitored_repo = os.environ["MONITORED_REPO"].split(";")
+        if repo not in monitored_repo:
+            abort(404)
 
         if event_tuple not in self._previous_events:
             # Add the event to the list of events; skip if it was already processed
