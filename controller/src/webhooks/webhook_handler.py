@@ -54,6 +54,8 @@ class WebhookHandler:
             self.source_branche = source_branch
             self.target_branche = target_branch
             self.pr_number = pr_number
+        else:
+            abort(420)
 
 
     def _extract_pull_request_event(self):
@@ -69,11 +71,10 @@ class WebhookHandler:
                     self._event["header"]["X-Hub-Signature-256"]
                 )
                 return body_dict
-            except Exception as e:
-                print("Exception occurred while verifying signature:")
-                print(e)
-                return None
-        return None
+            except Exception:
+                abort(401)
+        else:
+            abort(420)
 
     def save_to_csv(self):
         if not os.path.isfile(self._csv_file_path):
