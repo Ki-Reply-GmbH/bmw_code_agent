@@ -45,7 +45,7 @@ class WebhookHandler:
 
         monitored_repo = os.environ["MONITORED_REPO"].split(";")
         if repo not in monitored_repo:
-            abort(404)
+            abort(400)
 
         if event_tuple not in self._previous_events:
             # Add the event to the list of events; skip if it was already processed
