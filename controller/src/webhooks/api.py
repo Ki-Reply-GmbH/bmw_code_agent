@@ -2,6 +2,7 @@
 Local server for testing purposes.
 """
 from flask import Flask, request, abort
+from controller.src.main import main
 
 app = Flask(__name__)
 
@@ -15,14 +16,11 @@ def webhook():
             "header": dict(request.headers),  
             "body": request.get_data().decode()
         }
-        #print(event)
         events.append(event)
         return "sucess", 200
-    elif request.method == "GET":
-        print(events)
-        return events, 200
     else:
         abort(400)
     
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8080)
+    app.run(host="0.0.0.0", port=5000)
+    # Expose app on port 8080

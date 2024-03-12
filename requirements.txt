@@ -6,3 +6,4 @@ Requests==2.31.0
 black==24.2.0
 PyGithub==2.2.0
 Flask==3.0.2
+gunicorn==21.2.0

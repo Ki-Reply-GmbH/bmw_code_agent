@@ -20,7 +20,7 @@ def main():
     token = os.environ["GIT_ACCESS_TOKEN"]
 
     # Initialize WebhookHandler
-    webhook_url = "http://localhost:8080/optima/api/coding/webhook"
+    webhook_url = "http://localhost:5000/optima/api/coding/webhook"
     wh = WebhookHandler(webhook_url, "./.webhooks.csv")
 
     if len(wh.owners) == 0:
@@ -28,11 +28,11 @@ def main():
         return
 
     # Information extracted from webhook
-    owner = wh.owners[0]
-    repo = wh.repos[0]
-    source_branch = wh.source_branches[0]
-    target_branch = wh.target_branches[0]
-    pr_number = wh.pr_numbers[0]
+    owner = wh.owner
+    repo = wh.repo
+    source_branch = wh.source_branche
+    target_branch = wh.target_branche
+    pr_number = wh.pr_number
     
     LOGGER.debug("Retrieved information from webhook:\n%s\n%s\n%s\n%s\n%s\n",
                  owner,
@@ -84,7 +84,7 @@ def main():
 
     """ Interaction with the Code Quality Agent """
     LOGGER.debug("Interaction with the Code Quality Agent...")
-    ja_lag = LintAgent(directory=gi.get_tmp_path(), language="java")
+    ja_lag = LintAgent(directory=gi.get_tmp_path(), language="java-local")
 
     LOGGER.debug("Improving code...")
     ja_lag.improve_code()
