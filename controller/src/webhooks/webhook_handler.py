@@ -72,7 +72,7 @@ class WebhookHandler:
                     print("Trying to verify signature ...")
                     self.verify_signature(
                         event["body"].encode("utf-8"),
-                        os.environ["GITHUB_SECRET"],
+                        os.environ["GIT_WEBHOOK_SECRET"],
                         event["header"]["X-Hub-Signature-256"]
                     )
                     pull_request_events.append(body_dict)
