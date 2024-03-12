@@ -11,16 +11,16 @@ class WebhookHandler:
         self._webhook_url = webhook_url
         self._csv_file_path = csv_file_path
         self._data = self._read_webhook()
-        self._pull_request_events = self._extract_pull_request_events()
+        self._pull_request_event = self._extract_pull_request_event()
         self._previous_events = self._read_previous_events()
-        self.owners = []
-        self.repos = []
-        self.source_branches = []
-        self.target_branches = []
-        self.pr_numbers = []
+        self.owner = ""
+        self.repo = ""
+        self.source_branche = ""
+        self.target_branche = ""
+        self.pr_number = ""
 
         self._read_previous_events()
-        self._init_events()
+        self._init_event()
 
     def _read_previous_events(self):
         if not os.path.isfile(self._csv_file_path):
@@ -30,64 +30,55 @@ class WebhookHandler:
             next(reader)  # Skip the header
             return set(tuple(row) for row in reader)
 
-    def _init_events(self):
-        for event in self._pull_request_events:
-            owner = event["repository"]["owner"]["login"]
-            repo = event["repository"]["name"]
-            source_branch = event["pull_request"]["head"]["ref"]
-            target_branch = event["pull_request"]["base"]["ref"]
-            pr_number = event["number"]
-            event_tuple = (
-                self._webhook_url,
-                owner,
-                repo,
-                source_branch,
-                target_branch,
-                str(pr_number)
-            )
+    def _init_event(self, event):
+        owner = event["repository"]["owner"]["login"]
+        repo = event["repository"]["name"]
+        source_branch = event["pull_request"]["head"]["ref"]
+        target_branch = event["pull_request"]["base"]["ref"]
+        pr_number = event["number"]
+        event_tuple = (
+            self._webhook_url,
+            owner,
+            repo,
+            source_branch,
+            target_branch,
+            str(pr_number)
+        )
 
-            if event_tuple not in self._previous_events:
-                # Add the event to the list of events; skip if it was already processed
-                self.owners.append(owner)
-                self.repos.append(repo)
-                self.source_branches.append(source_branch)
-                self.target_branches.append(target_branch)
-                self.pr_numbers.append(pr_number)
+        if event_tuple not in self._previous_events:
+            # Add the event to the list of events; skip if it was already processed
+            self.owner = owner
+            self.repo = repo
+            self.source_branche = source_branch
+            self.target_branche = target_branch
+            self.pr_number = pr_number
 
     def _read_webhook(self):
         req = requests.get(self._webhook_url)
         if req.status_code == 200:
-            print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-            print("Request content:	")
-            print(req.content)
-            print("Request json:")
-            print(req.json())
-            print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
             return req.json()
         else:
             print("Failed to read webhook: %s", req.status_code)
             return []
 
-    def _extract_pull_request_events(self):
-        pull_request_events = []
-        for event in self._data:
-            body_dict = json.loads(event["body"])
-            if "pull_request" in body_dict and body_dict["action"] != "closed":
-                #TODO add validation that the pull request was opened, not closed
-                # And validate with the webhook secret
-                try:
-                    print("Trying to verify signature ...")
-                    self.verify_signature(
-                        event["body"].encode("utf-8"),
-                        os.environ["GIT_WEBHOOK_SECRET"],
-                        event["header"]["X-Hub-Signature-256"]
-                    )
-                    pull_request_events.append(body_dict)
-                except Exception as e:
-                    print("Exception occurred while verifying signature:")
-                    print(e)
-                    continue
-        return pull_request_events
+    def _extract_pull_request_event(self, event):
+        body_dict = json.loads(event["body"])
+        if "pull_request" in body_dict and body_dict["action"] != "closed":
+            #TODO add validation that the pull request was opened, not closed
+            # And validate with the webhook secret
+            try:
+                print("Trying to verify signature ...")
+                self.verify_signature(
+                    event["body"].encode("utf-8"),
+                    os.environ["GIT_WEBHOOK_SECRET"],
+                    event["header"]["X-Hub-Signature-256"]
+                )
+                return body_dict
+            except Exception as e:
+                print("Exception occurred while verifying signature:")
+                print(e)
+                return None
+        return None
 
     def save_to_csv(self):
         if not os.path.isfile(self._csv_file_path):
@@ -103,19 +94,18 @@ class WebhookHandler:
                         "pr_number"
                     ]
                 )
-        for i in range(len(self._owners)):
-            with open(self._csv_file_path, "a", newline="") as file:
-                writer = csv.writer(file)
-                writer.writerow(
-                    [
-                        self._webhook_url,
-                        self.owners[i],
-                        self.repos[i],
-                        self.source_branches[i],
-                        self.target_branches[i], 
-                        self.pr_numbers[i]
-                    ]
-                )
+        with open(self._csv_file_path, "a", newline="") as file:
+            writer = csv.writer(file)
+            writer.writerow(
+                [
+                    self._webhook_url,
+                    self.owner,
+                    self.repo,
+                    self.source_branch,
+                    self.target_branch, 
+                    self.pr_number
+                ]
+            )
 
     def verify_signature(self, payload_body, secret_token, signature_header):
         """Verify that the payload was sent from GitHub by validating SHA256.

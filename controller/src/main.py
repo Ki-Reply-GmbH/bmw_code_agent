@@ -11,7 +11,7 @@ from controller.src.webhooks.webhook_handler import WebhookHandler
 LOGGER = logging.getLogger(__name__)
 logging.basicConfig(level=logging.DEBUG)
 
-def main():
+def main(event: dict):
     """ Set up the local git repository """
 
     LOGGER.debug("Retrieving webhooks ...")
