@@ -7,7 +7,7 @@ app = Flask(__name__)
 
 events = []
 
-@app.route("/optima/api/coding/webhooks", methods=["POST", "GET"])
+@app.route("/optima/api/coding/webhook", methods=["POST", "GET"])
 def webhook():
     global events
     if request.method == "POST":

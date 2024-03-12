@@ -20,7 +20,7 @@ def main():
     token = os.environ["GIT_ACCESS_TOKEN"]
 
     # Initialize WebhookHandler
-    webhook_url = "http://localhost:8080/optima/api/coding/webhooks"
+    webhook_url = "http://localhost:8080/optima/api/coding/webhook"
     wh = WebhookHandler(webhook_url, "./.webhooks.csv")
 
     # Information extracted from webhook
