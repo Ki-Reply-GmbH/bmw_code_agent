@@ -83,7 +83,7 @@ def main(event: dict):
 
     """ Interaction with the Code Quality Agent """
     LOGGER.debug("Interaction with the Code Quality Agent...")
-    ja_lag = LintAgent(directory=gi.get_tmp_path(), language="java-local")
+    ja_lag = LintAgent(directory=gi.get_tmp_path(), language="java")
 
     LOGGER.debug("Improving code...")
     ja_lag.improve_code()

@@ -1,6 +1,5 @@
 import csv
 import os
-import requests
 import hashlib
 import hmac
 import json
