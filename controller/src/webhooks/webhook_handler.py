@@ -30,11 +30,11 @@ class WebhookHandler:
             return set(tuple(row) for row in reader)
 
     def _init_event(self):
-        owner = self._event["repository"]["owner"]["login"]
-        repo = self._event["repository"]["name"]
-        source_branch = self._event["pull_request"]["head"]["ref"]
-        target_branch = self._event["pull_request"]["base"]["ref"]
-        pr_number = self._event["number"]
+        owner = self._pull_request_event["repository"]["owner"]["login"]
+        repo = self._pull_request_event["repository"]["name"]
+        source_branch = self._pull_request_event["pull_request"]["head"]["ref"]
+        target_branch = self._pull_request_event["pull_request"]["base"]["ref"]
+        pr_number = self._pull_request_event["number"]
         event_tuple = (
             owner,
             repo,

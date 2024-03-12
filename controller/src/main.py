@@ -14,7 +14,6 @@ logging.basicConfig(level=logging.DEBUG)
 def main(event: dict):
     """ Set up the local git repository """
 
-    LOGGER.debug("Retrieving webhooks ...")
     # Arguments
     git_user = os.environ["GIT_USERNAME"]
     token = os.environ["GIT_ACCESS_TOKEN"]
@@ -23,7 +22,7 @@ def main(event: dict):
     webhook_url = "http://localhost:5000/optima/api/coding/webhook"
     wh = WebhookHandler(event, "./.webhooks.csv")
 
-    if len(wh.owners) == 0:
+    if len(wh.owner) == 0:
         LOGGER.debug("No new webhooks.")
         return
 
