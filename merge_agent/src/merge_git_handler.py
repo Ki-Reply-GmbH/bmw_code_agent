@@ -109,7 +109,7 @@ class MergeGitHandler(GitHandler):
         shutil.rmtree(os.path.join(os.path.dirname(__file__), ".tmp"))
     """
     
-    def _try_to_merge(self, cls):
+    def _try_to_merge(self):
         """
         Tries to merge the main branch into the feature branch.
 
@@ -119,7 +119,7 @@ class MergeGitHandler(GitHandler):
         Returns:
             bool: False if the merge is successful, True if a GitCommandError is raised.
         """
-        target_branch = cls._target_branch
+        target_branch = self._target_branch
         target_branch_ref = getattr(self._repo.refs, target_branch)
         try:
             self._repo.git.merge(target_branch_ref)
