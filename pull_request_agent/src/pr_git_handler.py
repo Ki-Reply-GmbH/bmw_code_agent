@@ -10,6 +10,9 @@ class PRGitHandler(GitHandler):
         return self._pr_number
     
     def comment_pull_request(self, comment: str):
+        comment += "\n\nPlease review the changes on the branch {}.".format(
+            self._unique_feature_branch_name
+            )
         data = {
             "body": comment
         }
