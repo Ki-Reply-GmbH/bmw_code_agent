@@ -120,7 +120,7 @@ class MergeGitHandler(GitHandler):
             bool: False if the merge is successful, True if a GitCommandError is raised.
         """
         try:
-            self._repo.git.merge(self._repo.refs.main) #TODO Source Branch verwenden
+            self._repo.git.merge(self._repo.refs.cls._target_branch)
             return False
         except GitCommandError as e:
             return True
