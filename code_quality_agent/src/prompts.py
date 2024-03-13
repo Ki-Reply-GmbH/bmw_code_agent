@@ -29,6 +29,29 @@ linter suggestions:
 ####
 """
 
+docs_prompt = """
+# Problem Statement:
+We have a collection of codebases in various programming languages that are \
+not adequately documented. Our goal is to improve the documentation of these \
+codebases to enhance the maintainability and understandability of the code. We \
+would like you to assist us in generating docstrings for the undocumented or \
+poorly documented code.
+
+## Programming Languages:
+The codebases are written in {language}.
+
+## Examples of Existing Docstrings:
+Here are some examples of docstrings that we have extracted from our codebases \
+to give you a sense of the format and style of documentation we are aiming for:
+{docstrings}
+
+## Undocumented or Poorly Documented Code:
+Here are is code that is either undocumented or poorly documented. Please \
+generate docstrings for this code in the same style as the examples shown \
+above:
+{code}
+"""
+
 commit_prompt = """
 I want you to act as a GitHub commit message generator.
 Summarize the following explanations in 3-10 words. 
