@@ -120,8 +120,9 @@ class MergeGitHandler(GitHandler):
             bool: False if the merge is successful, True if a GitCommandError is raised.
         """
         target_branch = cls._target_branch
+        target_branch_ref = getattr(self._repo.refs, target_branch)
         try:
-            self._repo.git.merge(self._repo.refs.target_branch)
+            self._repo.git.merge(target_branch_ref)
             return False
         except GitCommandError as e:
             return True
