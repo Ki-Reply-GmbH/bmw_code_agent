@@ -19,7 +19,6 @@ def main(event: dict):
     token = os.environ["GIT_ACCESS_TOKEN"]
 
     # Initialize WebhookHandler
-    webhook_url = "http://localhost:5000/optima/api/coding/webhook"
     wh = WebhookHandler(event, "./.webhooks.csv")
 
     if len(wh.owner) == 0:
