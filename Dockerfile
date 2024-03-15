@@ -22,6 +22,15 @@ RUN git config --global user.name "Timo Kubera"
 RUN pip3 install -r requirements.txt
 EXPOSE 5000
 
+# Copy und isntall certificates
+COPY ./assets/BMW_Trusted_Certificates_V16/Intermediate/*.crt /usr/local/share/ca-certificates/
+COPY ./assets/BMW_Trusted_Certificates_V16/Root/*.crt /usr/local/share/ca-certificates/
+RUN apt-get -y install openssl
+RUN echo -n | openssl s_client -connect gcdm-ai-emea-poc.openai.azure.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > /usr/local/share/ca-certificates/gcdm-ai-emea-poc.crt
+
+# Update CA certificates
+RUN update-ca-certificates
+
 # Install pmd for java code analysis
 RUN wget https://github.com/pmd/pmd/releases/download/pmd_releases%2F7.0.0-rc4/pmd-dist-7.0.0-rc4-bin.zip
 RUN unzip pmd-dist-7.0.0-rc4-bin.zip

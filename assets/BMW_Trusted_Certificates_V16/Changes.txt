@@ -1,0 +1,70 @@
+#2023-11 BMW root bundle V16
+Add
+BMW_Group_Issuing_CA_SSL_2
+
+#2023-10 BMW root bundle V15
+Remove
+BMW_Group_WLAN_CA
+Symantec_Class_3_SHA256_Code_Signing_CA
+Symantec_Class_3_Secure_Server_CA_-_G4
+Symantec_Class_3_EV_SSL_CA_-_G3
+QuoVadis_Global_SSL_ICA_G3
+
+#2022-12 BMW root bundle V14
+Remove
+BMW_Group_Issuing_CA_1
+BMW_Group_Issuing_CA_2
+BMW_Group_Issuing_CA_3
+Added
+Starfield_Services_Root_Certificate_Authority_G2
+
+#2022-05 BMW root bundle V13
+Remove
+GlobalSign_Organization_Validation_CA_G2
+
+# 2022-01 BMW root bundle V12 
+Remove 
+GlobalSign Root CA - R2
+GlobalSign Extended Validation CA - SHA256 - G2
+VeriSign Class 3 Public Primary Certification Authority - G5
+
+Added Intermediate CA
+DigiCertTrustedG4CodeSigningRSA4096SHA3842021CA1
+DigiCertGlobalG3CodeSigningECCSHA3842021CA1
+
+Added Trusted Root
+DigiCertTrustedRootG4
+
+Add Trusted Publisher
+BMW AG
+
+# 2021-09 BMW root bundle V11
+Removed expired 
+DST Root CA X3 ROOT CA
+
+
+Added Lets Encrypt new Roots
+ISRG Root X1
+ISRG Root X2
+Added Lets Encrypt new Intermediate
+R3
+R4
+E1
+E2
+ISRG X1 OCSP
+
+# 2021-06 BMW root bundle V10
+Removed expired Let's Encrypt intermediate
+
+# 2020-07 BMW root bundle V9
+Added Intermediate CA
+Amazon Server CA R3
+Amazon Server CA R1
+Amazon Server CA R1 Original
+
+Added Root CA
+Amazon Root CA4
+Amazon Root CA3
+Amazon Root CA2
+Amazon Root CA1
+Starfield Services Root Certificate Authority - G2
