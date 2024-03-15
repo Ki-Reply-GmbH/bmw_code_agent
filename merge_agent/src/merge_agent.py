@@ -12,35 +12,45 @@ It has several responsibilities:
 6. Creating a pull request in the downstream repository.
 """
 import os
-import openai
 import json
 import ast
 import merge_agent.src.prompts as prompts
+import httpx
+from openai import AzureOpenAI
 from merge_agent.src.functions import encode_to_base64, decode_from_base64
 from merge_agent.src.cache import Cache
 
 EXPLANATION, ANSWER = 0, 0
 CODE, COMMIT_MSG = 1, 1
 git_access_token = os.environ["GIT_ACCESS_TOKEN"]
-openai.api_key = os.environ["OPENAI_API_KEY"]
-def get_completion(prompt, model="gpt-4-1106-preview", type="text"):
+
+client = AzureOpenAI(
+    api_key=os.getenv("OPENAI_API_KEY"),  
+    api_version="2023-12-01-preview",
+    azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
+    http_client=httpx.Client(
+        proxies=os.environ["HTTPS_PROXY"]
+    )
+)
+
+def get_completion(prompt, model="gpt-4-1106-preview", type="json_object"):
     """
-    Sends a prompt to the OpenAI API and returns the AI's response.
+    Sends a prompt to the OpenAI API and returns the AI"s response.
     """
     messages = [
         {
             "role": "system",
-            "content": "You are a system designed to solve GitHub merge conflicts."
+            "content": "You are a system designed to improve code quality."
         },
         {
             "role": "user",
             "content": prompt
         }
     ]
-    response = openai.OpenAI().chat.completions.create(
+    response = client.chat.completions.create(
         model=model,
         messages=messages,
-        temperature=0,
+        temperature=0, # this is the degree of randomness of the model"s output,
         response_format={"type": type}
     )
     return response.choices[0].message.content
