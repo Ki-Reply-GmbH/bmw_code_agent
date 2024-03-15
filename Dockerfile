@@ -17,8 +17,6 @@ WORKDIR /bmw_code_agent
 # Install dependencies
 RUN apt-get -y update
 RUN apt-get -y install git
-RUN git config --global user.email "t.kubera@reply.de"
-RUN git config --global user.name "Timo Kubera"
 RUN pip3 install -r requirements.txt
 EXPOSE 5000
 
