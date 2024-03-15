@@ -54,7 +54,7 @@ class GitHandler:
     @classmethod
     def clone(cls):
         cls._repo = Repo.clone_from(
-            "https://{git_username}:{git_access_token}@github.com/{owner}/{repo}.git".format(
+            "https://{git_username}:{git_access_token}@atc-github.azure.cloud.bmw/{owner}/{repo}.git".format(
                 git_username=cls._git_user,
                 git_access_token=cls._token,
                 owner=cls._owner,
