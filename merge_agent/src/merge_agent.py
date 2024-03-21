@@ -25,7 +25,8 @@ CODE, COMMIT_MSG = 1, 1
 git_access_token = os.environ["GIT_ACCESS_TOKEN"]
 
 client = AzureOpenAI(
-    api_key=os.getenv("OPENAI_API_KEY"),  
+    api_key=os.getenv("OPENAI_API_KEY"),
+    api_version="2023-12-01-preview",
     azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
     http_client=httpx.Client(
         proxies=os.environ["HTTPS_PROXY"]
