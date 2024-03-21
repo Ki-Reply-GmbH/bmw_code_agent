@@ -2,9 +2,9 @@ import os
 import logging
 import json
 from controller.src.git_handler import GitHandler
-from merge_agent.src.merge_git_handler import MergeGitHandler, get_completion
+from merge_agent.src.merge_git_handler import MergeGitHandler
 from pull_request_agent.src.pr_git_handler import PRGitHandler
-from merge_agent.src.merge_agent import MergeAgent
+from merge_agent.src.merge_agent import MergeAgent, get_completion
 from code_quality_agent.src.lint_agent import LintAgent
 from pull_request_agent.src.pr_agent import PRAgent
 from controller.src.webhooks.webhook_handler import WebhookHandler
@@ -13,7 +13,7 @@ LOGGER = logging.getLogger(__name__)
 logging.basicConfig(level=logging.DEBUG)
 
 def main(event: dict):
-    with open('event.json', 'w') as f:
+    with open("event.json", "w") as f:
         json.dump(event, f)
     
     response = get_completion("Your prompt here, please answer with json format with any keys")
