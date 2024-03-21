@@ -5,7 +5,7 @@ from openai import AzureOpenAI
 
 client = AzureOpenAI(
     api_key=os.getenv("OPENAI_API_KEY"),
-    api_version="2023-12-01-preview",
+    api_version="2024-02-01",
     azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
     http_client=httpx.Client(
         proxies=os.environ["HTTPS_PROXY"]
