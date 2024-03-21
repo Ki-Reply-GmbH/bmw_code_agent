@@ -48,8 +48,8 @@ class GitHandler:
         )
         cls._tmp_path = os.path.join(project_root_dir, ".tmp")
         print("Temporary directory: " + cls._tmp_path)
-        cls._source_branch = source_branch
-        cls._target_branch = target_branch
+        cls._source_branch = f"origin/{source_branch}"
+        cls._target_branch = f"origin/{target_branch}"
         cls._git_user = git_user
         cls._owner = owner
         cls._token = token
