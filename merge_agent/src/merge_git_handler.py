@@ -121,7 +121,7 @@ class MergeGitHandler(GitHandler):
         """
         target_branch = self._target_branch
         target_branch_ref = f"origin/{target_branch}"
-        target_branch_ref = getattr(self._repo.refs, target_branch)
+        target_branch_ref = getattr(self._repo.refs, target_branch_ref)
         try:
             self._repo.git.merge(target_branch_ref)
             return False
