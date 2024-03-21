@@ -13,13 +13,6 @@ LOGGER = logging.getLogger(__name__)
 logging.basicConfig(level=logging.DEBUG)
 
 def main(event: dict):
-    with open("event.json", "w") as f:
-        json.dump(event, f)
-    
-    response = get_completion("Your prompt here, please answer with json format with any keys")
-    with open("test_response.txt", "w") as f:
-        f.write(response)
-
     """ Set up the local git repository """
 
     # Arguments
