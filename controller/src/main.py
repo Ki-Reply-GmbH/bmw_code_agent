@@ -50,6 +50,10 @@ def main(event: dict):
         token,
         repo
         )
+    gi.set_credentials(
+        email="t.kubera@reply.de",
+        name="TimoKubera"
+    )
     gi.clean_up()
     gi.clone()
 

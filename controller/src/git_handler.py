@@ -25,6 +25,10 @@ class GitHandler:
     def get_tmp_path(self):
         return self._tmp_path
 
+    def set_credentials(self, email, name):
+        self.git.config("user.email", email)
+        self.git.config("user.name", name)
+
     @classmethod
     def initialize(
         cls,
