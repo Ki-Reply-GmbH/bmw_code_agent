@@ -166,7 +166,11 @@ class MergeAgent():
         for i, explanation in enumerate(self.explanations):
             commit_prompt += "Explanation " + str(i) + ":\n"
             commit_prompt += explanation + "\n"
-        self.commit_msg = get_completion(commit_prompt)
+        self.commit_msg = get_completion(
+            commit_prompt,
+            model="GCDM-EMEA-GPT4",
+            type="text"
+            )
 
     def make_prompt(self, file_path: str, file_content:str) -> str:
         """

@@ -181,7 +181,11 @@ class LintAgent:
             tasks += path + ":\n"
             tasks += str(improved_source_code) + "\n"
         print("Commit Prompt: " + prompts.commit_prompt.format(tasks=tasks))
-        self.commit_msg = get_completion(prompts.commit_prompt.format(tasks=tasks), type="text")
+        self.commit_msg = get_completion(
+            prompts.commit_prompt.format(tasks=tasks),
+            model="GCDM-EMEA-GPT4"
+            type="text"
+            )
 
     def __str__(self):
         s = "Raw Stats:\n"
