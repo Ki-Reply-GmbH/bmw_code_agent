@@ -183,7 +183,7 @@ class LintAgent:
         print("Commit Prompt: " + prompts.commit_prompt.format(tasks=tasks))
         self.commit_msg = get_completion(
             prompts.commit_prompt.format(tasks=tasks),
-            model="GCDM-EMEA-GPT4"
+            model="GCDM-EMEA-GPT4",
             type="text"
             )
 
