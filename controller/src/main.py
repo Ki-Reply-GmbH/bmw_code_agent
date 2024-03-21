@@ -1,5 +1,6 @@
 import os
 import logging
+import json
 from controller.src.git_handler import GitHandler
 from merge_agent.src.merge_git_handler import MergeGitHandler
 from pull_request_agent.src.pr_git_handler import PRGitHandler
@@ -12,6 +13,9 @@ LOGGER = logging.getLogger(__name__)
 logging.basicConfig(level=logging.DEBUG)
 
 def main(event: dict):
+    with open('event.json', 'w') as f:
+        json.dump(event, f)
+
     """ Set up the local git repository """
 
     # Arguments
