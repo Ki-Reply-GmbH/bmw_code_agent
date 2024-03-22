@@ -5,7 +5,7 @@ The GitHandler class initializes and clones repositories and creates a
 feature branch.
 """
 import os
-from git import Repo
+from git import Repo, Git
 import shutil
 import stat
 from datetime import datetime
@@ -13,6 +13,7 @@ from uuid import uuid4
 
 class GitHandler:
     _tmp_path = None
+    _git = None
     _repo = None
     _owner = ""
     _token = ""
@@ -26,8 +27,8 @@ class GitHandler:
         return self._tmp_path
 
     def set_credentials(self, email, name):
-        self.git.config("user.email", email)
-        self.git.config("user.name", name)
+        self._git.config("user.email", email)
+        self._git.config("user.name", name)
 
     @classmethod
     def initialize(
@@ -46,8 +47,9 @@ class GitHandler:
                 )
             )
         )
-        cls._tmp_path = os.path.join(project_root_dir, ".tmp")
+        cls._tmp_path = os.path.join(project_root_dir, ".tmp") # unique machen
         print("Temporary directory: " + cls._tmp_path)
+        cls._git = Git(project_root_dir)
         cls._source_branch = f"origin/{source_branch}"
         cls._target_branch = f"origin/{target_branch}"
         cls._git_user = git_user
