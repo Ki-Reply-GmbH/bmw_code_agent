@@ -39,7 +39,8 @@ def get_completion(prompt, model="GCDM-EMEA-GPT4-1106", type="json_object"):
     return response.choices[0].message.content
 
 class LintAgent:
-    def __init__(self, directory, language):
+    def __init__(self, directory, changed_files, language):
+        self.pr_changed_files = changed_files #List of files that were changed in the PR
         self.directory = directory
         self.raw_stats = ""
         self.tasks = []
@@ -60,12 +61,6 @@ class LintAgent:
         return self.commit_msg
 
     def get_file_paths(self):
-        """
-        Returns the file paths of the files with merge conflicts.
-
-        Returns:
-            list of str: The file paths of the files with merge conflicts.
-        """
         file_paths = []
         for task, _ in self.tasks:
             file_paths.append(task)
@@ -123,12 +118,13 @@ class LintAgent:
     def create_tasks(self):
         """
         Extracts tasks from the raw output and stores them in the tasks list.
-        Each task is a tuple where the first element is a file path and the second element is the task description.
+        Each task is a tuple where the first element is a file path and the 
+        second element is the task description.
         """
         if self.language == "python":
             pattern = r"--- (.*?)\s.*?@@.*?\n(.*?)would reformat"
             matches = re.findall(pattern, self.raw_stats, re.DOTALL)
-            self.tasks = matches
+            self.tasks = [match for match in matches if any(file in match[0] for file in self.pr_changed_files)]
         elif self.language == "java" or self.language == "java-local":
             lines = self.raw_stats.split("\n")
             # Dictionary verwenden, damit kein Dateipfad mehrfach vorkommt.
@@ -137,7 +133,8 @@ class LintAgent:
                 match = re.match(r"(.*\.java):\d+:\s+(.*)", line)
                 if match:
                     directory, task = match.groups()
-                    tmp_dict[directory].append(task)
+                    if any(file in directory for file in self.pr_changed_files):
+                        tmp_dict[directory].append(task)
             # Dictionary in Liste von Tupeln umwandeln
             self.tasks = [(k, "\n".join(v)) for k, v in tmp_dict.items()]
 
