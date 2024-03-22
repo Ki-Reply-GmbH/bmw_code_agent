@@ -39,8 +39,7 @@ def get_completion(prompt, model="GCDM-EMEA-GPT4-1106", type="json_object"):
     return response.choices[0].message.content
 
 class LintAgent:
-    def __init__(self, directory, changed_files, language):
-        self.pr_changed_files = changed_files #List of files that were changed in the PR
+    def __init__(self, directory, language):
         self.directory = directory
         self.raw_stats = ""
         self.tasks = []
@@ -124,7 +123,7 @@ class LintAgent:
         if self.language == "python":
             pattern = r"--- (.*?)\s.*?@@.*?\n(.*?)would reformat"
             matches = re.findall(pattern, self.raw_stats, re.DOTALL)
-            self.tasks = [match for match in matches if any(file in match[0] for file in self.pr_changed_files)]
+            self.tasks = matches
         elif self.language == "java" or self.language == "java-local":
             lines = self.raw_stats.split("\n")
             # Dictionary verwenden, damit kein Dateipfad mehrfach vorkommt.
@@ -133,8 +132,7 @@ class LintAgent:
                 match = re.match(r"(.*\.java):\d+:\s+(.*)", line)
                 if match:
                     directory, task = match.groups()
-                    if any(file in directory for file in self.pr_changed_files):
-                        tmp_dict[directory].append(task)
+                    tmp_dict[directory].append(task)
             # Dictionary in Liste von Tupeln umwandeln
             self.tasks = [(k, "\n".join(v)) for k, v in tmp_dict.items()]
 
