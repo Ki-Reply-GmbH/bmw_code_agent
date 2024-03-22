@@ -47,8 +47,16 @@ class GitHandler:
                 )
             )
         )
-        cls._tmp_path = os.path.join(project_root_dir, ".tmp") # unique machen
+        unique_id = str(uuid4())
+        cls._tmp_path = os.path.join(
+            project_root_dir,
+            ".tmp",
+            f"{repo_name}_{unique_id}"
+            )
         print("Temporary directory: " + cls._tmp_path)
+        # Create the .tmp directory if it doesn't exist
+        os.makedirs(os.path.dirname(cls._tmp_path), exist_ok=True)
+        
         cls._git = Git(project_root_dir)
         cls._source_branch = f"origin/{source_branch}"
         cls._target_branch = f"origin/{target_branch}"
