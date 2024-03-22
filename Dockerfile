@@ -1,4 +1,4 @@
-FROM python:3.11
+FROM python:3.9
 COPY ./ /bmw_code_agent/
 WORKDIR /bmw_code_agent
 
