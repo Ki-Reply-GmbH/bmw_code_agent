@@ -28,7 +28,7 @@ class GitHandler:
 
     def set_credentials(self, email, name):
         self._git.config("--global user.email", email)
-        self._git.config("-- global user.name", name)
+        self._git.config("--global user.name", name)
 
     @classmethod
     def initialize(
