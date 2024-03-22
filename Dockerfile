@@ -35,6 +35,16 @@ RUN git config --global --get "remote.origin.url" && git config --global --unset
     git config --local --get "remote.origin.url" && git config --local --unset "remote.origin.url" || true && \
     git config --local --get "http.https://github.com/.extraheader" && git config --local --unset "http.https://github.com/.extraheader" || true
 
+# Install Java
+RUN apt-get update && \
+    apt-get install -y openjdk-11-jdk && \
+    apt-get clean;
+
+# Set environment variable JAVA_HOME
+ENV JAVA_HOME /usr/lib/jvm/java-11-openjdk-amd64
+# Add Java binaries to PATH
+ENV PATH $JAVA_HOME/bin:$PATH
+
 # Install pmd for java code analysis
 RUN wget https://github.com/pmd/pmd/releases/download/pmd_releases%2F7.0.0-rc4/pmd-dist-7.0.0-rc4-bin.zip
 RUN unzip pmd-dist-7.0.0-rc4-bin.zip
