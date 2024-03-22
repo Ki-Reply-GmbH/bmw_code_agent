@@ -29,11 +29,11 @@ RUN echo -n | openssl s_client -connect gcdm-ai-emea-poc.openai.azure.com:443 | 
 # Update CA certificates
 RUN update-ca-certificates
 
-# Remove Git configurations
-RUN git config --global --unset "remote.origin.url" && \
-    git config --global --unset "http.https://github.com/.extraheader" && \
-    git config --local --unset "remote.origin.url" && \
-    git config --local --unset "http.https://github.com/.extraheader"
+# Remove Git configurations (if they exist)
+RUN git config --global --get "remote.origin.url" && git config --global --unset "remote.origin.url" || true && \
+    git config --global --get "http.https://github.com/.extraheader" && git config --global --unset "http.https://github.com/.extraheader" || true && \
+    git config --local --get "remote.origin.url" && git config --local --unset "remote.origin.url" || true && \
+    git config --local --get "http.https://github.com/.extraheader" && git config --local --unset "http.https://github.com/.extraheader" || true
 
 # Install pmd for java code analysis
 RUN wget https://github.com/pmd/pmd/releases/download/pmd_releases%2F7.0.0-rc4/pmd-dist-7.0.0-rc4-bin.zip
