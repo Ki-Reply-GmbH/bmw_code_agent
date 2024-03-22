@@ -76,8 +76,9 @@ class PRAgent:
     
     def make_title(self):
         response = get_completion(
-            prompt=self.response,
-            system_prompt=prompts.pr_title_system_prompt,
+            prompts.pr_title_system_prompt.format(
+                prev_responses=self.response
+            )
         )
         self.title = response
 

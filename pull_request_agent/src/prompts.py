@@ -41,4 +41,5 @@ pr_title_system_prompt = """\
 You are an agent tasked with creating a title for a GitHub pull request (PR).
 The entire body of the pull request follows, for which you should create a \
 meaningful title.
+{prev_responses}
 """
