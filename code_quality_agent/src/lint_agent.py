@@ -2,10 +2,14 @@ import subprocess
 import re
 import os
 import json
+import logging
 from collections import defaultdict
 import code_quality_agent.src.prompts as prompts
 import httpx
 from openai import AzureOpenAI
+
+LOGGER = logging.getLogger(__name__)
+logging.basicConfig(level=logging.DEBUG)
 
 client = AzureOpenAI(
     api_key=os.getenv("OPENAI_API_KEY"),
@@ -49,6 +53,9 @@ class LintAgent:
 
         self.check_code()
         self.create_tasks()
+        LOGGER.debug("~~~~~~ LintAgent ~~~~~~")
+        LOGGER.debug("Directory:\n" + str(self.directory))
+        LOGGER.debug("Tasks:\n" + str(self.tasks))
 
     def get_commit_msg(self):
         """
