@@ -27,8 +27,8 @@ class GitHandler:
         return self._tmp_path
 
     def set_credentials(self, email, name):
-        self._git.config("user.email", email)
-        self._git.config("user.name", name)
+        self._git.config("--global user.email", email)
+        self._git.config("-- global user.name", name)
 
     @classmethod
     def initialize(
@@ -56,7 +56,7 @@ class GitHandler:
         print("Temporary directory: " + cls._tmp_path)
         # Create the .tmp directory if it doesn't exist
         os.makedirs(os.path.dirname(cls._tmp_path), exist_ok=True)
-        
+
         cls._git = Git(project_root_dir)
         cls._source_branch = f"origin/{source_branch}"
         cls._target_branch = f"origin/{target_branch}"
