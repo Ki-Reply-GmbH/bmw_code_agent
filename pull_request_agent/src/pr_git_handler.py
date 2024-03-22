@@ -16,7 +16,7 @@ class PRGitHandler(GitHandler):
         data = {
             "body": comment
         }
-        url = "https://api.github.com/repos/{owner}/{repo}/issues/{issue_number}/comments".format(
+        url = "https://atc-github.azure.cloud.bmw/api/v3/repos/{owner}/{repo}/issues/{issue_number}/comments".format(
             owner=self._owner,
             repo=self._repo_name,
             issue_number=self._pr_number  # Pull requests are considered as issues in terms of comments
@@ -39,7 +39,7 @@ class PRGitHandler(GitHandler):
             "title": title,
             "body": body
         }
-        url = "https://api.github.com/repos/{owner}/{repo}/pulls/{pr_number}".format(
+        url = "https://atc-github.azure.cloud.bmw/api/v3/repos/{owner}/{repo}/pulls/{pr_number}".format(
             owner=self._owner,
             repo=self._repo_name,
             pr_number=self._pr_number
