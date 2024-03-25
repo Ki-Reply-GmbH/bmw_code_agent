@@ -1,5 +1,6 @@
 import requests
 import json
+import re
 from controller.src.git_handler import GitHandler
 
 class PRGitHandler(GitHandler):
@@ -13,6 +14,7 @@ class PRGitHandler(GitHandler):
         comment += "\n\nPlease review the changes on the branch {}.".format(
             self._unique_feature_branch_name
             )
+        comment = self.shorten_file_paths(comment, self._unique_id)
         data = {
             "body": comment
         }
@@ -62,3 +64,7 @@ class PRGitHandler(GitHandler):
         else:
             print(f"Request failed with status code {resp.status_code}")
             return resp.text
+
+    def shorten_file_paths(self, input_string, unique_id):
+        pattern = r"(\/?bmw_code_agent\/\.tmp\/)([^_]+)_(" + re.escape(unique_id) + ")(\/.*)"
+        return re.sub(pattern, r"\2\4", input_string)

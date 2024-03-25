@@ -23,6 +23,7 @@ class GitHandler:
     _feature_branch = None
     _unique_feature_branch_name = ""
     _pr_number = None
+    _unique_id = None
 
     def get_tmp_path(self):
         return self._tmp_path
@@ -49,11 +50,11 @@ class GitHandler:
                 )
             )
         )
-        unique_id = str(uuid4())
+        cls._unique_id = str(uuid4())
         cls._tmp_path = os.path.join(
             project_root_dir,
             ".tmp",
-            f"{repo_name}_{unique_id}"
+            f"{repo_name}_{cls._unique_id}"
             )
         print("Temporary directory: " + cls._tmp_path)
         # Create the .tmp directory if it doesn't exist
