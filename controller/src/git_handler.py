@@ -81,7 +81,7 @@ class GitHandler:
             cls._tmp_path
             )
         cls._repo.git.checkout(cls._source_branch)
-        cls._unique_feature_branch_name = "optima/" + str(cls._pr_number) + str(time.time())
+        cls._unique_feature_branch_name = "optima/" + str(cls._pr_number) + "/" + str(time.time())
         cls._feature_branch = cls._repo.create_head(cls._unique_feature_branch_name)
         cls._repo.git.checkout(cls._feature_branch)
         print("Creatured feature branch.")
