@@ -48,11 +48,12 @@ def main(event: dict):
         git_user,
         owner,
         token,
-        repo
+        repo,
+        pr_number
         )
     gi.set_credentials(
-        email="t.kubera@reply.de",
-        name="TimoKubera"
+        email="optima-coding-mentor@bmw.de",
+        name="Optima Coding Mentor"
     )
     gi.clean_up()
     gi.clone()

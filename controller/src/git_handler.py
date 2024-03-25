@@ -8,7 +8,7 @@ import os
 from git import Repo, Git
 import shutil
 import stat
-from datetime import datetime
+import time
 from uuid import uuid4
 
 class GitHandler:
@@ -22,6 +22,7 @@ class GitHandler:
     _target_branch = None
     _feature_branch = None
     _unique_feature_branch_name = ""
+    _pr_number = None
 
     def get_tmp_path(self):
         return self._tmp_path
@@ -38,7 +39,8 @@ class GitHandler:
         git_user: str,
         owner: str,
         token: str,
-        repo_name: str
+        repo_name: str,
+        pr_number: str
         ):
         project_root_dir = os.path.dirname(
             os.path.dirname(
@@ -64,6 +66,7 @@ class GitHandler:
         cls._owner = owner
         cls._token = token
         cls._repo_name = repo_name
+        cls._pr_number = pr_number
 
     @classmethod
     def clone(cls):
@@ -78,7 +81,7 @@ class GitHandler:
             cls._tmp_path
             )
         cls._repo.git.checkout(cls._source_branch)
-        cls._unique_feature_branch_name = datetime.now().strftime("%Y%m-%d%H-%M%S-") + str(uuid4())
+        cls._unique_feature_branch_name = "optima/" + str(cls._pr_number) + str(time.time())
         cls._feature_branch = cls._repo.create_head(cls._unique_feature_branch_name)
         cls._repo.git.checkout(cls._feature_branch)
         print("Creatured feature branch.")
