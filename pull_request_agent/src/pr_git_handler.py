@@ -65,6 +65,24 @@ class PRGitHandler(GitHandler):
             print(f"Request failed with status code {resp.status_code}")
             return resp.text
 
-    def shorten_file_paths(self, input_string, unique_id):
-        pattern = r"(\/?bmw_code_agent\/\.tmp\/)([^_]+)_(" + re.escape(unique_id) + ")(\/.*)"
-        return re.sub(pattern, r"\2\4", input_string)
+    def shorten_file_paths(self, input_string):
+        """
+        Shortens file paths in the LLM response. The file path should start 
+        with the repo name and should not contain a unique id.
+        """
+        # Extract unique IDs from the input string
+        unique_ids = set(re.findall(r"bmw_code_agent\/\.tmp\/[^_]+_([^\/]+)", input_string))
+
+        # Iterate over each unique ID
+        for unique_id in unique_ids:
+            # Define the pattern to search for and the replacement pattern
+            pattern = r"(\/?bmw_code_agent\/\.tmp\/)([^_]+)_(" + re.escape(unique_id) + ")(\/.*)"
+            replacement = r"\2\4"
+
+            # Continuously apply the replacement until no more matches are found
+            while True:
+                input_string, num_substitutions = re.subn(pattern, replacement, input_string)
+                if num_substitutions == 0:
+                    break
+
+        return input_string
