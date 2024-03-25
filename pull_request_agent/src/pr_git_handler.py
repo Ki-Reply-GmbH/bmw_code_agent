@@ -14,7 +14,7 @@ class PRGitHandler(GitHandler):
         comment += "\n\nPlease review the changes on the branch {}.".format(
             self._unique_feature_branch_name
             )
-        comment = self.shorten_file_paths(comment, self._unique_id)
+        comment = self.shorten_file_paths(comment)
         data = {
             "body": comment
         }
