@@ -4,6 +4,7 @@ import ast
 import re
 import httpx
 from openai import AzureOpenAI
+from . import CodeQualityAgent
 
 client = AzureOpenAI(
     api_key=os.getenv("OPENAI_API_KEY"),
@@ -36,15 +37,15 @@ def get_completion(prompt, model="GCDM-EMEA-GPT4-1106", type="json_object"):
     )
     return response.choices[0].message.content
 
-class DocsAgent:
+class DocsAgent(CodeQualityAgent):
     """
     1. Pruefen der bestehenden Dokumentation (doc von code generieren und mit 
         bestehender Doc semantisch vergleichen)
     2. Falls ein unterschied besteht, dann entweder automatisch umschreiben 
         oder im PR vorschlagen.
     """
-    def __init__(self):
-        pass
+    def __init__(self, file_list):
+        super().__init__(file_list)
 
     def extract_docstrings(self, file_paths):
         """

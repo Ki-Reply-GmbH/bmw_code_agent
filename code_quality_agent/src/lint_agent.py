@@ -7,6 +7,7 @@ from collections import defaultdict
 import code_quality_agent.src.prompts as prompts
 import httpx
 from openai import AzureOpenAI
+from . import CodeQualityAgent
 
 LOGGER = logging.getLogger(__name__)
 logging.basicConfig(level=logging.DEBUG)
@@ -42,9 +43,9 @@ def get_completion(prompt, model="GCDM-EMEA-GPT4-1106", type="json_object"):
     )
     return response.choices[0].message.content
 
-class LintAgent:
-    def __init__(self, directory, language):
-        self.directory = directory
+class LintAgent(CodeQualityAgent):
+    def __init__(self, file_list, directory, language):
+        super().__init__(file_list)
         self.raw_stats = ""
         self.tasks = []
         self.improved_source_code = []
@@ -149,6 +150,11 @@ class LintAgent:
         """
         for task in self.tasks:
             file_path, task_description = task
+
+            # Improve only those files which are included in the file_list
+            filename = os.path.basename(file_path)
+            if filename not in self.file_list:
+                continue
             with open(file_path, "r") as file:
                 code = file.read()
             linter_suggestions = task_description
