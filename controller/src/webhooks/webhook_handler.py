@@ -3,6 +3,7 @@ import os
 import hashlib
 import hmac
 import json
+import requests
 from flask import abort
 
 class WebhookHandler:
@@ -17,6 +18,7 @@ class WebhookHandler:
         self.source_branche = ""
         self.target_branche = ""
         self.pr_number = ""
+        self.changed_files = []
 
         self._read_previous_events()
         self._init_event()
@@ -32,15 +34,17 @@ class WebhookHandler:
     def _init_event(self):
         owner = self._pull_request_event["repository"]["owner"]["login"]
         repo = self._pull_request_event["repository"]["name"]
+        full_repo_name = self._pull_request_event["repository"]["full_name"]
         source_branch = self._pull_request_event["pull_request"]["head"]["ref"]
         target_branch = self._pull_request_event["pull_request"]["base"]["ref"]
-        pr_number = self._pull_request_event["number"]
+        pr_number = str(self._pull_request_event["number"])
         event_tuple = (
             owner,
             repo,
+            full_repo_name,
             source_branch,
             target_branch,
-            str(pr_number)
+            pr_number
         )
 
         monitored_repo = os.environ["MONITORED_REPO"].split(";")
@@ -51,6 +55,7 @@ class WebhookHandler:
             # Add the event to the list of events; skip if it was already processed
             self.owner = owner
             self.repo = repo
+            self.full_repo_name = full_repo_name
             self.source_branche = source_branch
             self.target_branche = target_branch
             self.pr_number = pr_number
@@ -95,6 +100,7 @@ class WebhookHandler:
                 [
                     self.owner,
                     self.repo,
+                    self.full_repo_name,
                     self.source_branch,
                     self.target_branch, 
                     self.pr_number
@@ -121,3 +127,21 @@ class WebhookHandler:
         print()
         if not hmac.compare_digest(expected_signature, signature_header):
             raise Exception(status_code=403, detail="Request signatures didn't match!")
+
+    def get_changed_files(self, base_url, token):
+        """
+        Get a list of files changed in a pull request.
+
+        Args:
+            base_url (str): The base url of your GitHub API.
+            token (str): A GitHub Access Token to access the repo.
+        """
+        url = f"{base_url}/repos/{self.full_repo_name}/pulls/{self.pull_number}/files"
+        headers = {"Authorization": f"token {token}"}
+        response = requests.get(url, headers=headers)
+
+        if response.status_code != 200:
+            raise Exception(f"Failed to fetch changed files: {response.content}")
+
+        files = response.json()
+        self.changed_files = [file["filename"] for file in files]
