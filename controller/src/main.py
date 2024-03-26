@@ -7,7 +7,7 @@ from pull_request_agent.src.pr_git_handler import PRGitHandler
 from merge_agent.src.merge_agent import MergeAgent
 from code_quality_agent.src.lint_agent import LintAgent
 from pull_request_agent.src.pr_agent import PRAgent
-from controller.src.webhooks.webhook_handler import WebhookHandler
+from controller.src.webhook_handler import WebhookHandler
 
 LOGGER = logging.getLogger(__name__)
 logging.basicConfig(level=logging.DEBUG)
