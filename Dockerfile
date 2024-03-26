@@ -11,6 +11,7 @@ RUN apt-get -y update
 RUN apt-get -y install git
 RUN pip3 install -r requirements.txt
 EXPOSE 5000
+EXPOSE 5001
 
 # Copy und install certificates
 COPY ./assets/BMW_Trusted_Certificates_V16/Intermediate/*.crt /usr/local/share/ca-certificates/
