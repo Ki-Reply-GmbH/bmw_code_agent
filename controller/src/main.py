@@ -36,13 +36,15 @@ def main(event: dict):
     source_branch = wh.source_branche
     target_branch = wh.target_branche
     pr_number = wh.pr_number
+    file_list = wh.changed_files
     
     LOGGER.debug("Retrieved information from webhook:\n%s\n%s\n%s\n%s\n%s\n",
                  owner,
                  repo,
                  source_branch,
                  target_branch,
-                 pr_number
+                 pr_number,
+                 str(file_list)
                 )
 
     gi = GitHandler()

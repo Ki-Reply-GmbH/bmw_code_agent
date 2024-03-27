@@ -69,10 +69,7 @@ class LintAgent(CodeQualityAgent):
         return self.commit_msg
 
     def get_file_paths(self):
-        file_paths = []
-        for task, _ in self.tasks:
-            file_paths.append(task)
-        return file_paths
+        return self.file_list
 
     def get_responses(self):
         """
@@ -149,11 +146,13 @@ class LintAgent(CodeQualityAgent):
         """
         Given a task, returns the improved code using the OpenAI API.
         """
+        LOGGER.debug("Filelist " + self.file_list + "...")
         for task in self.tasks:
             file_path, task_description = task
 
             # Improve only those files which are included in the file_list
             filename = os.path.basename(file_path)
+            LOGGER.debug("Filename " + filename + "...")
             if filename not in self.file_list:
                 LOGGER.debug("Skipping " + filename + "...")
                 continue
