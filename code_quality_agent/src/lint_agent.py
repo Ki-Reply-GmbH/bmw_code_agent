@@ -154,9 +154,11 @@ class LintAgent(CodeQualityAgent):
             # Improve only those files which are included in the file_list
             filename = os.path.basename(file_path)
             if filename not in self.file_list:
+                LOGGER.debug("Skipping " + filename + "...")
                 continue
             with open(file_path, "r") as file:
                 code = file.read()
+            LOGGER.debug("Improving " + filename + "...")
             linter_suggestions = task_description
             prompt = prompts.lint_prompt.format(source_code=code, linter_suggestions=linter_suggestions)
             print("Calling OpenAI API for " + file_path + "...")
