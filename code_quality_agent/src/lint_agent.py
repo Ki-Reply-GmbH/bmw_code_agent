@@ -46,6 +46,7 @@ def get_completion(prompt, model="GCDM-EMEA-GPT4-1106", type="json_object"):
 class LintAgent(CodeQualityAgent):
     def __init__(self, file_list, directory, language):
         super().__init__(file_list)
+        self.directory = directory
         self.raw_stats = ""
         self.tasks = []
         self.improved_source_code = []
