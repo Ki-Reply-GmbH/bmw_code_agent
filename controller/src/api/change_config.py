@@ -20,9 +20,7 @@ def change_config():
                 # Decode the base64 encoded username:password
                 auth_string = basic_auth.b64decode(auth_string).decode("utf-8")
                 username, password = auth_string.split(":")
-                #TODO check if username and password are correct
-                correct_credentials = True
-                if correct_credentials:
+                if username == os.environ["BASIC_AUTH_USERNAME"] and password == os.environ["BASIC_AUTH_PASSWORD"]:
                     # Ändert die env-Variables für jeden SW-User, der den Kubernetes Pod
                     # nutzt. Sollte geändert werden, wenn das Projekt über PoC hinausgeht.
                     os.envion["json-deployment"] = event["body"]["json-deployment"]
