@@ -140,7 +140,13 @@ class LintAgent(CodeQualityAgent):
                     directory, task = match.groups()
                     tmp_dict[directory].append(task)
             # Dictionary in Liste von Tupeln umwandeln
-            self.tasks = [(k, "\n".join(v)) for k, v in tmp_dict.items()]
+            tasks = [(k, "\n".join(v)) for k, v in tmp_dict.items()]
+            # Only add those tasks, where the file is in the changed files list
+            for task in tasks:
+                long_file_path = task[0]
+                for file_path in self.file_list:
+                    if file_path in long_file_path:
+                        self.tasks.append(task)
 
     def improve_code(self):
         """
@@ -148,16 +154,9 @@ class LintAgent(CodeQualityAgent):
         """
         for task in self.tasks:
             file_path, task_description = task
-
-            # Improve only those files which are included in the file_list
-            filename = os.path.basename(file_path)
-            LOGGER.debug("Filename " + filename + "...")
-            if filename not in self.file_list:
-                LOGGER.debug("Skipping " + filename + "...")
-                continue
+            LOGGER.debug("Improving " + file_path + "...")
             with open(file_path, "r") as file:
                 code = file.read()
-            LOGGER.debug("Improving " + filename + "...")
             linter_suggestions = task_description
             prompt = prompts.lint_prompt.format(source_code=code, linter_suggestions=linter_suggestions)
             print("Calling OpenAI API for " + file_path + "...")

@@ -95,9 +95,8 @@ def main(event: dict):
     """ Interaction with the Code Quality Agent """
     #TODO Changed files (im PR) übergeben und nur die changed files anpassen.
     LOGGER.debug("Interaction with the Code Quality Agent...")
-    demo_path = os.path.join(gi.get_tmp_path(), "demo")
     ja_lag = LintAgent(file_list= wh.changed_files,
-                       directory=demo_path,
+                       directory=gi.get_tmp_path(),
                        language="java"
                        )
 
