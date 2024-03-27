@@ -46,6 +46,7 @@ def get_completion(prompt, model="GCDM-EMEA-GPT4-1106", type="json_object"):
 class LintAgent(CodeQualityAgent):
     def __init__(self, file_list, directory, language):
         super().__init__(file_list)
+        self.directory = directory
         self.raw_stats = ""
         self.tasks = []
         self.improved_source_code = []
@@ -68,10 +69,7 @@ class LintAgent(CodeQualityAgent):
         return self.commit_msg
 
     def get_file_paths(self):
-        file_paths = []
-        for task, _ in self.tasks:
-            file_paths.append(task)
-        return file_paths
+        return self.file_list
 
     def get_responses(self):
         """
@@ -142,7 +140,13 @@ class LintAgent(CodeQualityAgent):
                     directory, task = match.groups()
                     tmp_dict[directory].append(task)
             # Dictionary in Liste von Tupeln umwandeln
-            self.tasks = [(k, "\n".join(v)) for k, v in tmp_dict.items()]
+            tasks = [(k, "\n".join(v)) for k, v in tmp_dict.items()]
+            # Only add those tasks, where the file is in the changed files list
+            for task in tasks:
+                long_file_path = task[0]
+                for file_path in self.file_list:
+                    if file_path in long_file_path:
+                        self.tasks.append(task)
 
     def improve_code(self):
         """
@@ -150,11 +154,7 @@ class LintAgent(CodeQualityAgent):
         """
         for task in self.tasks:
             file_path, task_description = task
-
-            # Improve only those files which are included in the file_list
-            filename = os.path.basename(file_path)
-            if filename not in self.file_list:
-                continue
+            LOGGER.debug("Improving " + file_path + "...")
             with open(file_path, "r") as file:
                 code = file.read()
             linter_suggestions = task_description

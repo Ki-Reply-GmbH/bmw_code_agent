@@ -36,13 +36,15 @@ def main(event: dict):
     source_branch = wh.source_branche
     target_branch = wh.target_branche
     pr_number = wh.pr_number
+    file_list = wh.changed_files
     
-    LOGGER.debug("Retrieved information from webhook:\n%s\n%s\n%s\n%s\n%s\n",
+    LOGGER.debug("Retrieved information from webhook:\n%s\n%s\n%s\n%s\n%s\n%s\n",
                  owner,
                  repo,
                  source_branch,
                  target_branch,
-                 pr_number
+                 pr_number,
+                 str(file_list)
                 )
 
     gi = GitHandler()
@@ -93,8 +95,10 @@ def main(event: dict):
     """ Interaction with the Code Quality Agent """
     #TODO Changed files (im PR) übergeben und nur die changed files anpassen.
     LOGGER.debug("Interaction with the Code Quality Agent...")
-    demo_directory = os.path.join(gi.get_tmp_path(), "demo")
-    ja_lag = LintAgent(directory=demo_directory, language="java")
+    ja_lag = LintAgent(file_list= wh.changed_files,
+                       directory=gi.get_tmp_path(),
+                       language="java"
+                       )
 
     LOGGER.debug("Improving code...")
     ja_lag.improve_code()
