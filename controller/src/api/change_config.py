@@ -1,7 +1,6 @@
 import json
 import os
 from flask import Flask, request, abort
-from controller.src.main import main
 
 app = Flask(__name__)
 
@@ -15,12 +14,12 @@ def change_config():
         }
         basic_auth = event["header"].get("Authorization", None)
         if basic_auth:
-            # The auth_header should be in the format 'Basic base64encoded(username:password)'
-            auth_type, auth_string = basic_auth.split(' ')
-            if auth_type == 'Basic':
+            # The auth_header should be in the format "Basic base64encoded(username:password)"
+            auth_type, auth_string = basic_auth.split(" ")
+            if auth_type == "Basic":
                 # Decode the base64 encoded username:password
-                auth_string = basic_auth.b64decode(auth_string).decode('utf-8')
-                username, password = auth_string.split(':')
+                auth_string = basic_auth.b64decode(auth_string).decode("utf-8")
+                username, password = auth_string.split(":")
                 #TODO check if username and password are correct
                 correct_credentials = True
                 if correct_credentials:
@@ -35,4 +34,4 @@ def change_config():
         abort(400)
     
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5001)
+    app.run(host="0.0.0.0", port=5000)
