@@ -38,7 +38,7 @@ def main(event: dict):
     pr_number = wh.pr_number
     file_list = wh.changed_files
     
-    LOGGER.debug("Retrieved information from webhook:\n%s\n%s\n%s\n%s\n%s\n",
+    LOGGER.debug("Retrieved information from webhook:\n%s\n%s\n%s\n%s\n%s\n%s\n",
                  owner,
                  repo,
                  source_branch,

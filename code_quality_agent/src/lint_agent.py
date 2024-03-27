@@ -146,7 +146,6 @@ class LintAgent(CodeQualityAgent):
         """
         Given a task, returns the improved code using the OpenAI API.
         """
-        LOGGER.debug("Filelist " + self.file_list + "...")
         for task in self.tasks:
             file_path, task_description = task
 
