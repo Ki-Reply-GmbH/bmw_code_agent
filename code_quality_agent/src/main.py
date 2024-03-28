@@ -1,5 +1,5 @@
 from file_retriever import FileRetriever
-from lint_agent import LintAgent
+from docs_agent import DocsAgent
 
 """
 python_files = FileRetriever("./tests").get_mapping()["py"]
@@ -7,7 +7,7 @@ print(python_files)
 print()
 """
 
-agent = LintAgent(directory="./tests", language="java")
+agent = DocsAgent(directory=".", language="python")
 
 print("Improving code...")
 agent.improve_code()
