@@ -127,7 +127,7 @@ class DocsAgent(CodeQualityAgent):
                 docstrings = self._extract_javadoc(file_path)
                 self._existing_docstrings.extend(docstrings)
     
-    def _extract_pydoc(file_path):
+    def _extract_pydoc(self, file_path):
         """
         Extracts the Python docstrings from a file.
 
@@ -137,13 +137,13 @@ class DocsAgent(CodeQualityAgent):
         Returns:
             list of str: The docstrings. Returns an empty list if no docstrings are found.
         """
-        with open(file_path, "r") as file:
+        with open(file_path, "r", encoding="utf-8") as file:
             module = ast.parse(file.read())
 
         docstrings = ast.get_docstring(module, clean=True)
         return docstrings if docstrings else []
     
-    def _extract_javadoc(file_path):
+    def _extract_javadoc(self, file_path):
         """
         Extracts the Java docstrings from a file.
 
@@ -153,7 +153,7 @@ class DocsAgent(CodeQualityAgent):
         Returns:
             list of str: The docstrings. Returns an empty list if no docstrings are found.
         """
-        with open(file_path, "r") as file:
+        with open(file_path, "r", encoding="utf-8") as file:
             content = file.read()
 
         pattern = r"/\*\*(.*?)\*/"
