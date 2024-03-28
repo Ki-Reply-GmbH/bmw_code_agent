@@ -36,6 +36,7 @@ not adequately documented. Our goal is to improve the documentation of these \
 codebases to enhance the maintainability and understandability of the code. We \
 would like you to assist us in generating docstrings for the undocumented or \
 poorly documented code.
+Return a json object with 2 keys, "documented_source_code" and "explanation".
 
 ## Programming Languages:
 The codebases are written in {language}.
