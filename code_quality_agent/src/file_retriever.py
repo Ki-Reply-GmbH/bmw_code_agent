@@ -25,10 +25,10 @@ class FileRetriever:
         self.file_list = []
         self.file_mapping = {} # Keys: File extensions, Values: List of file paths
 
-        self.__find_files()
-        self.__file_mapping()
+        self._find_files()
+        self._file_mapping()
 
-    def __find_files(self):
+    def _find_files(self):
         # Liste zum Speichern der gefundenen Dateien
         file_list = []
 
@@ -45,7 +45,7 @@ class FileRetriever:
         # Zurückgeben der Liste mit den gefundenen Dateien
         self.file_list = file_list
 
-    def __file_mapping(self):
+    def _file_mapping(self):
         # Dictionary zum Speichern des Mappings
         mapping = {}
 

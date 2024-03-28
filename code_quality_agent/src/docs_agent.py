@@ -5,6 +5,7 @@ import re
 import httpx
 from openai import AzureOpenAI
 from . import CodeQualityAgent
+from code_quality_agent.src.file_retriever import FileRetriever
 
 client = AzureOpenAI(
     api_key=os.getenv("OPENAI_API_KEY"),
@@ -60,8 +61,21 @@ class DocsAgent(CodeQualityAgent):
         Returns:
             list of str: The docstrings.
         """
+        # Get the mapping of file extensions to file paths
+        file_retriever = FileRetriever(self.directory)
+        file_mapping = file_retriever.get_mapping()
+
         # Currently only Java and Python are supported
-        
+        if self.language == "python":
+            python_files = file_mapping.get("py", [])
+            for file_path in python_files:
+                docstrings = self.extract_pydoc(file_path)
+                self.existing_docstrings.extend(docstrings)
+        elif self.language == "java":
+            java_files = file_mapping.get("java", [])
+            for file_path in java_files:
+                docstrings = self.extract_javadoc(file_path)
+                self.existing_docstrings.extend(docstrings)
     
     def extract_pydoc(file_path):
         with open(file_path, "r") as file:
