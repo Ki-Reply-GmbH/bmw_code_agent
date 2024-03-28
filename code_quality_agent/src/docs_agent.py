@@ -44,10 +44,13 @@ class DocsAgent(CodeQualityAgent):
     2. Falls ein unterschied besteht, dann entweder automatisch umschreiben 
         oder im PR vorschlagen.
     """
-    def __init__(self, file_list):
+    def __init__(self, file_list, directory, language):
         super().__init__(file_list)
+        self.directory = directory
+        self.language = language
+        self.existing_docstrings = []
 
-    def extract_docstrings(self, file_paths):
+    def extract_docstrings(self):
         """
         Extracts the docstrings from a file.
 
@@ -57,7 +60,8 @@ class DocsAgent(CodeQualityAgent):
         Returns:
             list of str: The docstrings.
         """
-        pass
+        # Currently only Java and Python are supported
+        
     
     def extract_pydoc(file_path):
         with open(file_path, "r") as file:
