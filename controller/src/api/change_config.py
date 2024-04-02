@@ -24,8 +24,8 @@ def change_config():
                    and password == os.environ["OPTIMA-FE-PASSWORD"]:
                     # Ändert die env-Variables für jeden SW-User, der den Kubernetes Pod
                     # nutzt. Sollte geändert werden, wenn das Projekt über PoC hinausgeht.
-                    os.envion["JSON-DEPLOYMENT"] = event["body"]["JSON-DEPLOYMENT"]
-                    os.envion["TEXT-DEPLOYMENT"] = event["body"]["TEXT-DEPLOYMENT"]
+                    os.environ["JSON-DEPLOYMENT"] = event["body"]["JSON-DEPLOYMENT"]
+                    os.environ["TEXT-DEPLOYMENT"] = event["body"]["TEXT-DEPLOYMENT"]
                     return "sucess", 200
                 else:
                     return "Unauthorized", 401
