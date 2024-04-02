@@ -29,6 +29,8 @@ def change_config():
                     return "sucess", 200
                 else:
                     return "Unauthorized", 401
+            else:
+                return "Invalid Authorization", 401
     else:
         abort(400)
     
