@@ -11,7 +11,6 @@ RUN apt-get -y update
 RUN apt-get -y install git
 RUN pip3 install -r requirements.txt
 EXPOSE 5000
-EXPOSE 5001
 
 # Copy und install certificates
 COPY ./assets/BMW_Trusted_Certificates_V16/Intermediate/*.crt /usr/local/share/ca-certificates/
@@ -39,4 +38,9 @@ ENV PATH="${JAVA_HOME}/bin:${PATH}"
 # Install pmd for java code analysis
 RUN wget https://github.com/pmd/pmd/releases/download/pmd_releases%2F7.0.0-rc4/pmd-dist-7.0.0-rc4-bin.zip
 RUN unzip pmd-dist-7.0.0-rc4-bin.zip
-CMD ["python3", "-m", "controller.src.webhooks.api"]
+
+# Make the script executable
+RUN chmod +x /bmw_code_agent/start_apis.sh
+
+# Set the script as the default command
+CMD ["/bin/bash", "/bmw_code_agent/start_apis.sh"]
