@@ -46,6 +46,13 @@ def main(event: dict):
                  pr_number,
                  str(file_list)
                 )
+    
+    LOGGER.debug("Non-critical environment variables:\n%s\n%s\n%s\n%s\n",
+                 os.environ["OPTIMA-FE-USERNAME"],
+                 os.environ["OPTIMA-FE-PASSWORD"],
+                 os.environ["JSON-DEPLOYMENT"],
+                 os.environ["TEXT-DEPLOYMENT"]
+                 )
 
     gi = GitHandler()
     gi.initialize(
