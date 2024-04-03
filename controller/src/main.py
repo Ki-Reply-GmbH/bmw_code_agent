@@ -7,7 +7,7 @@ from pull_request_agent.src.pr_git_handler import PRGitHandler
 from merge_agent.src.merge_agent import MergeAgent
 from code_quality_agent.src.lint_agent import LintAgent
 from pull_request_agent.src.pr_agent import PRAgent
-from controller.src.webhooks.webhook_handler import WebhookHandler
+from controller.src.webhook_handler import WebhookHandler
 
 LOGGER = logging.getLogger(__name__)
 logging.basicConfig(level=logging.DEBUG)
@@ -93,7 +93,6 @@ def main(event: dict):
     )
 
     """ Interaction with the Code Quality Agent """
-    #TODO Changed files (im PR) übergeben und nur die changed files anpassen.
     LOGGER.debug("Interaction with the Code Quality Agent...")
     ja_lag = LintAgent(file_list= wh.changed_files,
                        directory=gi.get_tmp_path(),

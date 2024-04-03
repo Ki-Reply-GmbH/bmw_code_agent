@@ -38,4 +38,9 @@ ENV PATH="${JAVA_HOME}/bin:${PATH}"
 # Install pmd for java code analysis
 RUN wget https://github.com/pmd/pmd/releases/download/pmd_releases%2F7.0.0-rc4/pmd-dist-7.0.0-rc4-bin.zip
 RUN unzip pmd-dist-7.0.0-rc4-bin.zip
-CMD ["python3", "-m", "controller.src.webhooks.api"]
+
+# Make the script executable
+RUN chmod +x /bmw_code_agent/start_apis.sh
+
+# Set the script as the default command
+CMD ["/bin/bash", "/bmw_code_agent/start_apis.sh"]

@@ -33,7 +33,7 @@ client = AzureOpenAI(
     )
 )
 
-def get_completion(prompt, model="GCDM-EMEA-GPT4-1106", type="json_object"): # make global env variable that's used for the model
+def get_completion(prompt, model=os.environ["JSON-DEPLOYMENT"], type="json_object"): # make global env variable that's used for the model
     """
     Sends a prompt to the OpenAI API and returns the AI"s response.
     """
@@ -168,7 +168,7 @@ class MergeAgent():
             commit_prompt += explanation + "\n"
         self.commit_msg = get_completion(
             commit_prompt,
-            model="GCDM-EMEA-GPT4",
+            model=os.environ["TEXT-DEPLOYMENT"],
             type="text"
             )
 

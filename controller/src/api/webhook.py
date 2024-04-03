@@ -1,6 +1,3 @@
-"""
-Local server for testing purposes.
-"""
 from flask import Flask, request, abort
 from controller.src.main import main
 

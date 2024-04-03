@@ -19,7 +19,7 @@ client = AzureOpenAI(
     )
 )
 
-def get_completion(prompt, model="GCDM-EMEA-GPT4-1106", type="json_object"):
+def get_completion(prompt, model=os.environ["JSON-DEPLOYMENT"], type="json_object"):
     """
     Sends a prompt to the OpenAI API and returns the AI"s response.
     """
