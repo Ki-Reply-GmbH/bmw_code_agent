@@ -1,10 +1,10 @@
 import json
 import os
-from flask import Flask, request, abort
+from flask import Blueprint, request, abort
 
-app = Flask(__name__)
+change_config_blueprint = Blueprint("change_config", __name__)
 
-@app.route("/optima/api/coding/openaideployment", methods=["POST"])
+@change_config_blueprint.route("/optima/api/coding/openaideployment", methods=["POST"])
 def change_config():
     if request.method == "POST":
         #TODO namen ggf. ändern
@@ -18,8 +18,8 @@ def change_config():
             auth_type, auth_string = basic_auth.split(" ")
             if auth_type == "Basic":
                 # Decode the base64 encoded username:password
-                auth_string = basic_auth.b64decode(auth_string).decode('utf-8')
-                username, password = auth_string.split(':')
+                auth_string = basic_auth.b64decode(auth_string).decode("utf-8")
+                username, password = auth_string.split(":")
                 if username == os.environ["OPTIMA-FE-USERNAME"] \
                    and password == os.environ["OPTIMA-FE-PASSWORD"]:
                     # Ändert die env-Variables für jeden SW-User, der den Kubernetes Pod
@@ -34,5 +34,3 @@ def change_config():
     else:
         abort(400)
     
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)

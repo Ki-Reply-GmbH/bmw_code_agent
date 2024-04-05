@@ -43,4 +43,4 @@ RUN unzip pmd-dist-7.0.0-rc4-bin.zip
 RUN chmod +x /bmw_code_agent/start_apis.sh
 
 # Set the script as the default command
-CMD ["/bin/bash", "/bmw_code_agent/start_apis.sh"]
+CMD ["python3", "-m", "controller.src.api.primary_api"]

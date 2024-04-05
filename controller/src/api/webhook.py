@@ -1,9 +1,9 @@
-from flask import Flask, request, abort
+from flask import Blueprint, request, abort
 from controller.src.main import main
 
-app = Flask(__name__)
+webhook_blueprint = Blueprint("webhook", __name__)
 
-@app.route("/optima/api/coding/webhook", methods=["POST"])
+@webhook_blueprint.route("/optima/api/coding/webhook", methods=["POST"])
 def webhook():
     if request.method == "POST":
         event = {
@@ -14,6 +14,3 @@ def webhook():
         return "sucess", 200
     else:
         abort(400)
-    
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
