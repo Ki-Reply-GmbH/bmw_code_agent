@@ -1,4 +1,4 @@
 #!/bin/bash
-python3 -m controller.src.webhooks.api &
-python3 -m controller.api.change_config &
+python3 -m controller.src.api.webhook &
+python3 -m controller.src.api.change_config &
 wait
