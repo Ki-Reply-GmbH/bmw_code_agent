@@ -1,5 +1,6 @@
 import json
 import os
+import base64
 from flask import Blueprint, request, abort
 
 change_config_blueprint = Blueprint("change_config", __name__)
@@ -18,7 +19,7 @@ def change_config():
             auth_type, auth_string = basic_auth.split(" ")
             if auth_type == "Basic":
                 # Decode the base64 encoded username:password
-                auth_string = basic_auth.b64decode(auth_string).decode("utf-8")
+                auth_string = base64.b64decode(auth_string).decode("utf-8")
                 username, password = auth_string.split(":")
                 if username == os.environ["OPTIMA-FE-USERNAME"] \
                    and password == os.environ["OPTIMA-FE-PASSWORD"]:
