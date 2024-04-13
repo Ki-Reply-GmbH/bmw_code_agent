@@ -136,7 +136,6 @@ class WebhookHandler:
             base_url (str): The base url of your GitHub API.
             token (str): A GitHub Access Token to access the repo.
         """
-        #TODO Don't add files that were deleted in the p.r.
         url = f"{base_url}/repos/{self.full_repo_name}/pulls/{self.pr_number}/files"
         headers = {"Authorization": f"token {token}"}
         response = requests.get(url, headers=headers)
@@ -145,4 +144,18 @@ class WebhookHandler:
             raise Exception(f"Failed to fetch changed files: {response.content}")
 
         files = response.json()
+        
+        #TODO Don't add files that were deleted in the p.r.
+        # => Full file path and check for os.path.exist
+        print("Debug: Changed files:")
         self.changed_files = [file["filename"] for file in files]
+        print(self.changed_files)
+        """
+        self.changed_files = ['demo/Calculator.java',
+            'demo/gcdm-ms-file-generator-web/src/main/FileGeneratorResource.java',
+            'demo/gcdm-ms-file-generator-web/src/main/UserProcessorResource.java',
+            'demo/gcdm-ms-file-generator-web/src/main/VehicleProcessorResource.java'
+            ]
+
+            optima-coding-mentor-789f7fd6c8-2dggn
+        """

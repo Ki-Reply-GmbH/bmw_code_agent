@@ -2,6 +2,7 @@ import os
 import logging
 import json
 from controller.src.git_handler import GitHandler
+from controller.src.helper import not_deleted_files
 from merge_agent.src.merge_git_handler import MergeGitHandler
 from pull_request_agent.src.pr_git_handler import PRGitHandler
 from merge_agent.src.merge_agent import MergeAgent
@@ -36,7 +37,7 @@ def main(event: dict):
     source_branch = wh.source_branche
     target_branch = wh.target_branche
     pr_number = wh.pr_number
-    file_list = wh.changed_files
+    file_list = not_deleted_files(wh.changed_files)
     
     LOGGER.debug("Retrieved information from webhook:\n%s\n%s\n%s\n%s\n%s\n%s\n",
                  owner,
