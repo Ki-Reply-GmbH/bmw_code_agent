@@ -1,6 +1,7 @@
 import requests
 import json
 import re
+import os
 from controller.src.git_handler import GitHandler
 
 class PRGitHandler(GitHandler):
@@ -41,7 +42,8 @@ class PRGitHandler(GitHandler):
             "title": title,
             "body": body
         }
-        url = "https://atc-github.azure.cloud.bmw/api/v3/repos/{owner}/{repo}/pulls/{pr_number}".format(
+        #url = "https://atc-github.azure.cloud.bmw/api/v3/repos/{owner}/{repo}/pulls/{pr_number}".format(
+        url = "https://" + os.environ["GIT_BASE_URL"] + "/api/v3/repos/{owner}/{repo}/pulls/{pr_number}".format(
             owner=self._owner,
             repo=self._repo_name,
             pr_number=self._pr_number
