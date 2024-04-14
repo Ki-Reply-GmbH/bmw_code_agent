@@ -108,18 +108,39 @@ def main(event: dict):
 
     """ Interaction with the Code Quality Agent """
     LOGGER.debug("Interaction with the Code Quality Agent...")
-    ja_lag = LintAgent(file_list= updated_file_list,
-                       directory=gi.get_tmp_path(),
-                       language="java"
-                       )
-
-    LOGGER.debug("Improving code...")
+    ja_lag = LintAgent(
+        file_list= updated_file_list,
+        directory=gi.get_tmp_path(),
+        language="java"
+        )
+    LOGGER.debug("Improving Java code...")
     ja_lag.improve_code()
-
     LOGGER.debug("Writing changes...")
     ja_lag.write_changes()
-
     print(ja_lag)
+
+    py_lag = LintAgent(
+        file_list= updated_file_list,
+        directory=gi.get_tmp_path(),
+        language="python"
+        )
+    LOGGER.debug("Improving Python code...")
+    py_lag.improve_code()
+    LOGGER.debug("Writing changes...")
+    py_lag.write_changes()
+    print(py_lag)
+
+    other_file_list = [file for file in updated_file_list if ".py" not in file and ".java" not in file]
+    other_lag = LintAgent(
+        file_list= other_file_list,
+        directory=gi.get_tmp_path(),
+        language="other"
+        )
+    LOGGER.debug("Improving other code...")
+    other_lag.improve_code()
+    LOGGER.debug("Writing changes...")
+    other_lag.write_changes()
+    print(other_lag)
 
     LOGGER.debug("Committing changes...")
     ja_lag.make_commit_msg()
@@ -133,8 +154,8 @@ def main(event: dict):
         pr_agent.set_memory(
             "cq_agent",
             ja_lag.get_file_paths(),
-            ja_lag.get_responses(),
-            ja_lag.get_commit_msg()
+            ja_lag.get_responses() + py_lag.get_responses() + other_lag.get_responses(),
+            ja_lag.get_commit_msg() + py_lag.get_commit_msg() + other_lag.get_commit_msg()
         )
 
     LOGGER.debug(pr_agent)
