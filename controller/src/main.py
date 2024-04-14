@@ -72,9 +72,9 @@ def main(event: dict):
     gi.clean_up()
     gi.clone()
 
-    file_list = not_deleted_files(gi.get_tmp_path(), file_list)
+    updated_file_list = not_deleted_files(gi.get_tmp_path(), file_list)
     LOGGER.debug("Updated file list:\n%s\n",
-                 str(file_list)
+                 str(updated_file_list)
                 )
 
     """ Initialize with the Pull Request Agent """
@@ -107,7 +107,7 @@ def main(event: dict):
 
     """ Interaction with the Code Quality Agent """
     LOGGER.debug("Interaction with the Code Quality Agent...")
-    ja_lag = LintAgent(file_list= wh.changed_files,
+    ja_lag = LintAgent(file_list= updated_file_list,
                        directory=gi.get_tmp_path(),
                        language="java"
                        )
