@@ -29,6 +29,28 @@ linter suggestions:
 ####
 """
 
+lint_prompt_not_highlighted = """
+You will get source code separated by ####. If necessary improve the code \
+quality of the source code. If the code is already following best practices,\
+tell me that you didn't change anything.
+
+Proceed as follows:
+1. Analyze the source code and identify the language.
+2. Formulate a plan to improve the code quality, following best practices for \
+that language.
+3. Apply changes that improve code quality and maintain the current coding \
+convention if one is found. Do not add placeholders in your code. The source \
+code must be compilable or interpretable. Avoid creating a package structure \
+that would require placeholders. \
+5. Ensure that the solution you found is compilable or interpretable, and does not \
+contain placeholders or incomplete package structures.
+6. Return a json object with 2 keys, "improved_source_code" and "explanation". \
+
+####
+source code:
+{source_code}
+"""
+
 docs_prompt = """
 # Problem Statement:
 We have a collection of codebases in various programming languages that are \

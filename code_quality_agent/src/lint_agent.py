@@ -46,6 +46,7 @@ def get_completion(prompt, model=os.environ["JSON-DEPLOYMENT"], type="json_objec
 class LintAgent(CodeQualityAgent):
     def __init__(self, file_list, directory, language):
         super().__init__(file_list)
+        self.highlighted_languages = ["python", "java", "java-local"]
         self.directory = directory
         self.raw_stats = ""
         self.tasks = []
@@ -119,6 +120,8 @@ class LintAgent(CodeQualityAgent):
                 text=True
                 )
             self.raw_stats = result.stdout
+        else:
+            pass
 
     def create_tasks(self):
         """
@@ -147,23 +150,38 @@ class LintAgent(CodeQualityAgent):
                 for file_path in self.file_list:
                     if file_path in long_file_path:
                         self.tasks.append(task)
+        else:
+            pass
 
     def improve_code(self):
         """
         Given a task, returns the improved code using the OpenAI API.
         """
-        for task in self.tasks:
-            file_path, task_description = task
-            LOGGER.debug("Improving " + file_path + "...")
-            with open(file_path, "r") as file:
-                code = file.read()
-            linter_suggestions = task_description
-            prompt = prompts.lint_prompt.format(source_code=code, linter_suggestions=linter_suggestions)
-            print("Calling OpenAI API for " + file_path + "...")
-            print(prompt)
-            print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-            improved_source_code = get_completion(prompt)
-            self.improved_source_code.append((file_path, improved_source_code))
+        if self.language in self.highlighted_languages:
+            for task in self.tasks:
+                file_path, task_description = task
+                LOGGER.debug("Improving " + file_path + "...")
+                with open(file_path, "r") as file:
+                    code = file.read()
+                linter_suggestions = task_description
+                prompt = prompts.lint_prompt.format(source_code=code, linter_suggestions=linter_suggestions)
+                print("Calling OpenAI API for " + file_path + "...")
+                print(prompt)
+                print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+                improved_source_code = get_completion(prompt)
+                self.improved_source_code.append((file_path, improved_source_code))
+        else:
+            for file in self.file_list:
+                file_path = os.path.join(self.directory, file)
+                with open(file_path, "r") as file:
+                    code = file.read()
+                prompt = prompts.lint_prompt.format(source_code=code)
+                print("Calling OpenAI API for " + file_path + "...")
+                print(prompt)
+                print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+                improved_source_code = get_completion(prompt)
+                self.improved_source_code.append((file_path, improved_source_code))
+
 
     def write_changes(self):
         """
