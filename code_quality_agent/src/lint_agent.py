@@ -95,6 +95,7 @@ class LintAgent(CodeQualityAgent):
                 stderr=subprocess.STDOUT
                 )
             self.raw_stats = result.stdout.decode("utf-8")
+            LOGGER.debug("Python raw stats:\n" + self.raw_stats)
         elif self.language == "java":
             current_dir = os.path.dirname(os.path.realpath(__file__))
             pmd_path = os.path.join(current_dir, "../../pmd-bin-7.0.0-rc4/bin/pmd")
@@ -110,6 +111,7 @@ class LintAgent(CodeQualityAgent):
                 text=True
                 )
             self.raw_stats = result.stdout
+            LOGGER.debug("Java raw stats:\n" + self.raw_stats)
         elif self.language == "java-local":
             result = subprocess.run(
                 ["C:\\pmd-bin-7.0.0-rc4\\bin\\pmd.bat",
@@ -120,6 +122,7 @@ class LintAgent(CodeQualityAgent):
                 text=True
                 )
             self.raw_stats = result.stdout
+            LOGGER.debug("Java raw stats:\n" + self.raw_stats)
         else:
             pass
 
@@ -175,7 +178,7 @@ class LintAgent(CodeQualityAgent):
                 file_path = os.path.join(self.directory, file)
                 with open(file_path, "r") as file:
                     code = file.read()
-                prompt = prompts.lint_prompt.format(source_code=code)
+                prompt = prompts.lint_prompt_not_highlighted.format(source_code=code)
                 print("Calling OpenAI API for " + file_path + "...")
                 print(prompt)
                 print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
