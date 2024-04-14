@@ -95,15 +95,16 @@ def main(event: dict):
     LOGGER.debug("Committing changes...")
     gi.write_responses(mag.get_file_paths(), mag.get_responses())
     mag.make_commit_msg()
-    gi.commit_and_push(mag.get_file_paths(), mag.get_commit_msg())
+    merge_commit_and_push = gi.commit_and_push(mag.get_file_paths(), mag.get_commit_msg())
 
     """ Update the Pull Request Agent's memory """
-    pr_agent.set_memory(
-        "merge_agent",
-        mag.get_file_paths(),
-        mag.get_responses(),
-        mag.get_commit_msg()
-    )
+    if merge_commit_and_push:
+        pr_agent.set_memory(
+            "merge_agent",
+            mag.get_file_paths(),
+            mag.get_responses(),
+            mag.get_commit_msg()
+        )
 
     """ Interaction with the Code Quality Agent """
     LOGGER.debug("Interaction with the Code Quality Agent...")
@@ -124,16 +125,17 @@ def main(event: dict):
     ja_lag.make_commit_msg()
     LOGGER.debug("File paths:\n" + str(ja_lag.get_file_paths()))
     LOGGER.debug("Commit message:\n" + ja_lag.get_commit_msg())
-    gi.commit_and_push(ja_lag.get_file_paths(), ja_lag.get_commit_msg())
+    lint_commit_and_push = gi.commit_and_push(ja_lag.get_file_paths(), ja_lag.get_commit_msg())
 
     """" Update the Pull Request Agent's memory """
     LOGGER.debug("Updating the Pull Request Agent's memory...")
-    pr_agent.set_memory(
-        "cq_agent",
-        ja_lag.get_file_paths(),
-        ja_lag.get_responses(),
-        ja_lag.get_commit_msg()
-    )
+    if lint_commit_and_push:
+        pr_agent.set_memory(
+            "cq_agent",
+            ja_lag.get_file_paths(),
+            ja_lag.get_responses(),
+            ja_lag.get_commit_msg()
+        )
 
     LOGGER.debug(pr_agent)
 

@@ -122,6 +122,9 @@ class GitHandler:
         if changes:
             cls._repo.git.commit("-m", commit_msg)
             cls._repo.git.push("--set-upstream", "origin", GitHandler._repo.active_branch.name)
+            return True
+        else:
+            return False
 
     @classmethod
     def write_responses(cls, file_paths, responses):
