@@ -156,8 +156,8 @@ def main(event: dict):
         pr_agent.set_memory(
             "cq_agent",
             ja_lag.get_file_paths(),
-            ja_lag.get_responses() + py_lag.get_responses() + other_lag.get_responses(),
-            ja_lag.get_commit_msg() + py_lag.get_commit_msg() + other_lag.get_commit_msg()
+            ja_lag.get_responses() +  other_lag.get_responses(),
+            ja_lag.get_commit_msg() +  other_lag.get_commit_msg()
         )
 
     LOGGER.debug(pr_agent)
