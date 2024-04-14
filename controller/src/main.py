@@ -119,7 +119,7 @@ def main(event: dict):
     ja_lag.make_commit_msg()
     LOGGER.debug("File paths:\n" + str(ja_lag.get_file_paths()))
     LOGGER.debug("Commit message:\n" + ja_lag.get_commit_msg())
-    gi.commit_and_push(ja_lag.get_file_paths()[1:], ja_lag.get_commit_msg())
+    gi.commit_and_push(ja_lag.get_file_paths(), ja_lag.get_commit_msg())
 
     """" Update the Pull Request Agent's memory """
     LOGGER.debug("Updating the Pull Request Agent's memory...")
