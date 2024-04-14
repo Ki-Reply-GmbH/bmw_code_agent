@@ -37,7 +37,7 @@ def main(event: dict):
     source_branch = wh.source_branche
     target_branch = wh.target_branche
     pr_number = wh.pr_number
-    file_list = not_deleted_files(wh.changed_files)
+    file_list = wh.changed_files
     
     LOGGER.debug("Retrieved information from webhook:\n%s\n%s\n%s\n%s\n%s\n%s\n",
                  owner,
@@ -71,6 +71,11 @@ def main(event: dict):
     )
     gi.clean_up()
     gi.clone()
+
+    file_list = not_deleted_files(gi.get_tmp_path(), file_list)
+    LOGGER.debug("Updated file list:\n%s\n",
+                 str(file_list)
+                )
 
     """ Initialize with the Pull Request Agent """
     pr_agent = PRAgent()
