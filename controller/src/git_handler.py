@@ -117,9 +117,11 @@ class GitHandler:
         - Pushes the changes to the remote repository, setting the upstream branch to the active branch.
         """
         cls._repo.git.add(file_paths)
-        #TODO Skip if no files were added.
-        cls._repo.git.commit("-m", commit_msg)
-        cls._repo.git.push("--set-upstream", "origin", GitHandler._repo.active_branch.name)
+        
+        changes = cls._repo.git.diff("--staged")
+        if changes:
+            cls._repo.git.commit("-m", commit_msg)
+            cls._repo.git.push("--set-upstream", "origin", GitHandler._repo.active_branch.name)
 
     @classmethod
     def write_responses(cls, file_paths, responses):
