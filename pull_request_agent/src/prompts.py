@@ -29,6 +29,8 @@ There are two commits that you should merge, created by a merge agent or a \
 code quality agent, separated by ####. 
 If one of the two commit information sections is empty, don't mention that the \
 commit has no information, just ignore it.
+It is very important that you mention every file that has been changed and that \
+you describe the changes for each changed file.
 
 Commit Merge Agent:
 {memory_merge_agent}
