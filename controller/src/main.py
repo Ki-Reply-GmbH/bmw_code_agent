@@ -119,6 +119,7 @@ def main(event: dict):
     ja_lag.write_changes()
     print(ja_lag)
 
+    """
     py_lag = LintAgent(
         file_list= updated_file_list,
         directory=gi.get_tmp_path(),
@@ -129,8 +130,9 @@ def main(event: dict):
     LOGGER.debug("Writing changes...")
     py_lag.write_changes()
     print(py_lag)
+    """
 
-    other_file_list = [file for file in updated_file_list if ".py" not in file and ".java" not in file]
+    other_file_list = [file for file in updated_file_list if ".java" not in file]
     other_lag = LintAgent(
         file_list= other_file_list,
         directory=gi.get_tmp_path(),
