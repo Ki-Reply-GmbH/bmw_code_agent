@@ -119,6 +119,12 @@ def main(event: dict):
     ja_lag.write_changes()
     print(ja_lag)
 
+    LOGGER.debug("Committing changes...")
+    ja_lag.make_commit_msg()
+    LOGGER.debug("File paths:\n" + str(ja_lag.get_file_paths()))
+    LOGGER.debug("Commit message:\n" + ja_lag.get_commit_msg())
+    lint_commit_and_push = gi.commit_and_push(ja_lag.get_file_paths(), ja_lag.get_commit_msg())
+
     """
     py_lag = LintAgent(
         file_list= updated_file_list,
@@ -145,10 +151,10 @@ def main(event: dict):
     print(other_lag)
 
     LOGGER.debug("Committing changes...")
-    ja_lag.make_commit_msg()
-    LOGGER.debug("File paths:\n" + str(ja_lag.get_file_paths()))
-    LOGGER.debug("Commit message:\n" + ja_lag.get_commit_msg())
-    lint_commit_and_push = gi.commit_and_push(ja_lag.get_file_paths(), ja_lag.get_commit_msg())
+    other_lag.make_commit_msg()
+    LOGGER.debug("File paths:\n" + str(other_lag.get_file_paths()))
+    LOGGER.debug("Commit message:\n" + other_lag.get_commit_msg())
+    lint_commit_and_push = lint_commit_and_push or gi.commit_and_push(other_lag.get_file_paths(), other_lag.get_commit_msg())
 
     """" Update the Pull Request Agent's memory """
     LOGGER.debug("Updating the Pull Request Agent's memory...")
