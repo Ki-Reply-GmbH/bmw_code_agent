@@ -28,7 +28,10 @@ class PRGitHandler(GitHandler):
             )
             data = {"body": comment}
             response = requests.post(url, headers=headers, data=json.dumps(data))
-            self.comment_id = response.json()["id"]
+            if response.status_code == 201:
+                self.comment_id = response.json().get("id")
+            else:
+                print(f"Failed to create comment: {response.status_code}, {response.text}")
         else:
             # Update the existing comment
             url = "https://" + os.environ["GIT_BASE_URL"] + "/api/v3/repos/{owner}/{repo}/issues/{issue_number}/comments".format(
