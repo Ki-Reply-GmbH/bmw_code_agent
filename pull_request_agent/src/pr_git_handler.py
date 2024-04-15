@@ -42,10 +42,10 @@ class PRGitHandler(GitHandler):
                 LOGGER.debug(f"Failed to create comment: {response.status_code}, {response.text}")
         else:
             # Update the existing comment
-            url = "https://" + os.environ["GIT_BASE_URL"] + "/api/v3/repos/{owner}/{repo}/issues/{issue_number}/comments".format(
+            url = "https://" + os.environ["GIT_BASE_URL"] + "/api/v3/repos/{owner}/{repo}/issues/comments/{comment_id}".format(
                 owner=self._owner,
                 repo=self._repo_name,
-                issue_number=self._pr_number  # Pull requests are considered as issues in terms of comments
+                comment_id=self.comment_id 
             )
             data = {"body": comment}
             response = requests.patch(url, headers=headers, data=json.dumps(data))

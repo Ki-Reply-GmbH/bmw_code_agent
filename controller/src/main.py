@@ -96,15 +96,12 @@ def main(event: dict):
 
     LOGGER.debug("Initialized GitHandler and Agents")
     for i, file_path in enumerate(mgh.get_unmerged_filepaths()):
-        if i > 0:
-            pr_gi.create_progress_bar(30)
-
         file_content = mgh.get_f_content(i)
         mag.make_prompt(file_path, file_content)
         LOGGER.debug("Ai is solving the merge conflict in %s...", mgh.get_unmerged_filepaths()[i])
         resp = mag.solve_merge_conflict()
         
-    pr_gi.create_progress_bar(50)
+    pr_gi.create_progress_bar(25)
 
     LOGGER.debug("Committing changes...")
     gi.write_responses(mag.get_file_paths(), mag.get_responses())
