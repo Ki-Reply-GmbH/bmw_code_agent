@@ -18,7 +18,8 @@ class PRGitHandler(GitHandler):
             "Accept": "application/json",
             "Authorization": "token {token}".format(token=self._token)
         }
-
+        print("create_or_update_comment: " + comment)
+        
         if self.comment_id is None:
             # Create a new comment
             url = "https://" + os.environ["GIT_BASE_URL"] + "/api/v3/repos/{owner}/{repo}/issues/{issue_number}/comments".format(
