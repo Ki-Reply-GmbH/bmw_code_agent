@@ -23,7 +23,6 @@ def main(event: dict):
     # Initialize WebhookHandler
     wh = WebhookHandler(event, "./.webhooks.csv")
     wh.get_changed_files(
-        base_url="https://atc-github.azure.cloud.bmw/api/v3",
         token=token
         )
 
