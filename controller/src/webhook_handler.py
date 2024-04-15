@@ -136,7 +136,7 @@ class WebhookHandler:
             base_url (str): The base url of your GitHub API.
             token (str): A GitHub Access Token to access the repo.
         """
-        url = f"https://{os.environ["GIT_BASE_URL"]}/api/v3/repos/{self.full_repo_name}/pulls/{self.pr_number}/files"
+        url = f"https://{os.environ['GIT_BASE_URL']}/api/v3/repos/{self.full_repo_name}/pulls/{self.pr_number}/files"
         headers = {"Authorization": f"token {token}"}
         response = requests.get(url, headers=headers)
 
