@@ -118,7 +118,7 @@ def main(event: dict):
             mag.get_commit_msg()
         )
 
-    pr_gi.create_progress_bar(50)
+    pr_gi.create_progress_bar(30)
 
     """ Interaction with the Code Quality Agent """
     LOGGER.debug("Interaction with the Code Quality Agent...")
@@ -130,6 +130,7 @@ def main(event: dict):
 
     LOGGER.debug("Improving Java code...")
     ja_lag.improve_code()
+    pr_gi.create_progress_bar(60)
     LOGGER.debug("Writing changes...")
     ja_lag.write_changes()
     print(ja_lag)
@@ -164,6 +165,7 @@ def main(event: dict):
 
     LOGGER.debug("Improving other code...")
     other_lag.improve_code()
+    pr_gi.create_progress_bar(75)
     LOGGER.debug("Writing changes...")
     other_lag.write_changes()
     print(other_lag)
