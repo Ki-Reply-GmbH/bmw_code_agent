@@ -2,7 +2,11 @@ import requests
 import json
 import re
 import os
+import logging
 from controller.src.git_handler import GitHandler
+
+LOGGER = logging.getLogger(__name__)
+logging.basicConfig(level=logging.DEBUG)
 
 class PRGitHandler(GitHandler):
     def __init__(self, pr_number) -> None:
@@ -18,8 +22,8 @@ class PRGitHandler(GitHandler):
             "Accept": "application/json",
             "Authorization": "token {token}".format(token=self._token)
         }
-        print("Comment ID: " + str(self.comment_id))
-        print("create_or_update_comment: " + comment)
+        LOGGER.debug("Comment ID: " + str(self.comment_id))
+        LOGGER.debug("create_or_update_comment: " + comment)
 
         if self.comment_id is None:
             # Create a new comment
@@ -31,11 +35,11 @@ class PRGitHandler(GitHandler):
             data = {"body": comment}
             response = requests.post(url, headers=headers, data=json.dumps(data))
             if response.status_code == 201:
-                print("Response:")
-                print(response.json())
+                LOGGER.debug("Response:")
+                LOGGER.debug(response.json())
                 self.comment_id = response.json().get("id")
             else:
-                print(f"Failed to create comment: {response.status_code}, {response.text}")
+                LOGGER.debug(f"Failed to create comment: {response.status_code}, {response.text}")
         else:
             # Update the existing comment
             url = "https://" + os.environ["GIT_BASE_URL"] + "/api/v3/repos/{owner}/{repo}/issues/{issue_number}/comments".format(
@@ -46,11 +50,11 @@ class PRGitHandler(GitHandler):
             data = {"body": comment}
             response = requests.patch(url, headers=headers, data=json.dumps(data))
             if response.status_code == 200:
-                print("Response:")
-                print(response.json())
-                print("Comment updated successfully.")
+                LOGGER.debug("Response:")
+                LOGGER.debug(response.json())
+                LOGGER.debug("Comment updated successfully.")
             else:
-                print(f"Failed to update comment: {response.status_code}, {response.text}")
+                LOGGER.debug(f"Failed to update comment: {response.status_code}, {response.text}")
 
     def comment_pull_request(self, comment: str):
         comment += "\n\nPlease review the changes on the branch {}.".format(
