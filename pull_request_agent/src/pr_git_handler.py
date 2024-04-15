@@ -19,7 +19,7 @@ class PRGitHandler(GitHandler):
             "Authorization": "token {token}".format(token=self._token)
         }
         print("create_or_update_comment: " + comment)
-        
+
         if self.comment_id is None:
             # Create a new comment
             url = "https://" + os.environ["GIT_BASE_URL"] + "/api/v3/repos/{owner}/{repo}/issues/{issue_number}/comments".format(
@@ -42,6 +42,10 @@ class PRGitHandler(GitHandler):
             )
             data = {"body": comment}
             requests.patch(url, headers=headers, data=json.dumps(data))
+            if response.status_code == 200:
+                print("Comment updated successfully.")
+            else:
+                print(f"Failed to update comment: {response.status_code}, {response.text}")
 
     def comment_pull_request(self, comment: str):
         comment += "\n\nPlease review the changes on the branch {}.".format(
