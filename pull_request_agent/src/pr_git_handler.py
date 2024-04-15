@@ -18,6 +18,7 @@ class PRGitHandler(GitHandler):
             "Accept": "application/json",
             "Authorization": "token {token}".format(token=self._token)
         }
+        print("Comment ID: " + str(self.comment_id))
         print("create_or_update_comment: " + comment)
 
         if self.comment_id is None:
@@ -43,7 +44,7 @@ class PRGitHandler(GitHandler):
                 issue_number=self._pr_number  # Pull requests are considered as issues in terms of comments
             )
             data = {"body": comment}
-            requests.patch(url, headers=headers, data=json.dumps(data))
+            response = requests.patch(url, headers=headers, data=json.dumps(data))
             if response.status_code == 200:
                 print("Response:")
                 print(response.json())
