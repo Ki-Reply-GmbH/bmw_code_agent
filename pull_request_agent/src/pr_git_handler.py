@@ -30,6 +30,8 @@ class PRGitHandler(GitHandler):
             data = {"body": comment}
             response = requests.post(url, headers=headers, data=json.dumps(data))
             if response.status_code == 201:
+                print("Response:")
+                print(response.json())
                 self.comment_id = response.json().get("id")
             else:
                 print(f"Failed to create comment: {response.status_code}, {response.text}")
@@ -43,6 +45,8 @@ class PRGitHandler(GitHandler):
             data = {"body": comment}
             requests.patch(url, headers=headers, data=json.dumps(data))
             if response.status_code == 200:
+                print("Response:")
+                print(response.json())
                 print("Comment updated successfully.")
             else:
                 print(f"Failed to update comment: {response.status_code}, {response.text}")
