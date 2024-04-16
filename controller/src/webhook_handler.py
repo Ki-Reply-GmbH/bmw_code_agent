@@ -128,7 +128,7 @@ class WebhookHandler:
         if not hmac.compare_digest(expected_signature, signature_header):
             raise Exception(status_code=403, detail="Request signatures didn't match!")
 
-    def get_changed_files(self, token):
+    def get_changed_files(self, base_url, token):
         """
         Get a list of files changed in a pull request.
 
@@ -136,7 +136,7 @@ class WebhookHandler:
             base_url (str): The base url of your GitHub API.
             token (str): A GitHub Access Token to access the repo.
         """
-        url = f"https://{os.environ['GIT_BASE_URL']}/api/v3/repos/{self.full_repo_name}/pulls/{self.pr_number}/files"
+        url = f"{base_url}/repos/{self.full_repo_name}/pulls/{self.pr_number}/files"
         headers = {"Authorization": f"token {token}"}
         response = requests.get(url, headers=headers)
 

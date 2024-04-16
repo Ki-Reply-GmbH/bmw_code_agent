@@ -23,6 +23,7 @@ def main(event: dict):
     # Initialize WebhookHandler
     wh = WebhookHandler(event, "./.webhooks.csv")
     wh.get_changed_files(
+        base_url="https://atc-github.azure.cloud.bmw/api/v3",
         token=token
         )
 
@@ -38,10 +39,6 @@ def main(event: dict):
     pr_number = wh.pr_number
     file_list = wh.changed_files
     
-    # Initializing PRGitHandler
-    pr_gi = PRGitHandler(pr_number)
-    pr_gi.create_progress_bar(0)
-    
     LOGGER.debug("Retrieved information from webhook:\n%s\n%s\n%s\n%s\n%s\n%s\n",
                  owner,
                  repo,
@@ -51,15 +48,12 @@ def main(event: dict):
                  str(file_list)
                 )
     
-
-    LOGGER.debug("Non-critical environment variables:\n%s\n%s\n%s\n%s\n%s\n",
+    LOGGER.debug("Non-critical environment variables:\n%s\n%s\n%s\n%s\n",
                  os.environ["OPTIMA-FE-USERNAME"],
                  os.environ["OPTIMA-FE-PASSWORD"],
                  os.environ["JSON-DEPLOYMENT"],
-                 os.environ["TEXT-DEPLOYMENT"],
-                 os.environ["GIT_BASE_URL"]
+                 os.environ["TEXT-DEPLOYMENT"]
                  )
-    
 
     gi = GitHandler()
     gi.initialize(
@@ -71,15 +65,12 @@ def main(event: dict):
         repo,
         pr_number
         )
-
     gi.set_credentials(
         email="optima-coding-mentor@bmw.de",
         name="Optima Coding Mentor"
     )
     gi.clean_up()
     gi.clone()
-
-    pr_gi.create_progress_bar(10)
 
     updated_file_list = not_deleted_files(gi.get_tmp_path(), file_list)
     LOGGER.debug("Updated file list:\n%s\n",
@@ -94,19 +85,17 @@ def main(event: dict):
     mag = MergeAgent(gi._repo)
 
     LOGGER.debug("Initialized GitHandler and Agents")
+
     for i, file_path in enumerate(mgh.get_unmerged_filepaths()):
         file_content = mgh.get_f_content(i)
         mag.make_prompt(file_path, file_content)
         LOGGER.debug("Ai is solving the merge conflict in %s...", mgh.get_unmerged_filepaths()[i])
         resp = mag.solve_merge_conflict()
-        
-    pr_gi.create_progress_bar(25)
 
     LOGGER.debug("Committing changes...")
     gi.write_responses(mag.get_file_paths(), mag.get_responses())
     mag.make_commit_msg()
     merge_commit_and_push = gi.commit_and_push(mag.get_file_paths(), mag.get_commit_msg())
-
 
     """ Update the Pull Request Agent's memory """
     if merge_commit_and_push:
@@ -117,8 +106,6 @@ def main(event: dict):
             mag.get_commit_msg()
         )
 
-    pr_gi.create_progress_bar(30)
-
     """ Interaction with the Code Quality Agent """
     LOGGER.debug("Interaction with the Code Quality Agent...")
     ja_lag = LintAgent(
@@ -126,10 +113,8 @@ def main(event: dict):
         directory=gi.get_tmp_path(),
         language="java"
         )
-
     LOGGER.debug("Improving Java code...")
     ja_lag.improve_code()
-    pr_gi.create_progress_bar(60)
     LOGGER.debug("Writing changes...")
     ja_lag.write_changes()
     print(ja_lag)
@@ -139,8 +124,6 @@ def main(event: dict):
     LOGGER.debug("File paths:\n" + str(ja_lag.get_file_paths()))
     LOGGER.debug("Commit message:\n" + ja_lag.get_commit_msg())
     lint_commit_and_push = gi.commit_and_push(ja_lag.get_file_paths(), ja_lag.get_commit_msg())
-
-    pr_gi.create_progress_bar(65)
 
     """
     py_lag = LintAgent(
@@ -160,11 +143,9 @@ def main(event: dict):
         file_list= other_file_list,
         directory=gi.get_tmp_path(),
         language="other"
-        ) 
-
+        )
     LOGGER.debug("Improving other code...")
     other_lag.improve_code()
-    pr_gi.create_progress_bar(75)
     LOGGER.debug("Writing changes...")
     other_lag.write_changes()
     print(other_lag)
@@ -174,8 +155,6 @@ def main(event: dict):
     LOGGER.debug("File paths:\n" + str(other_lag.get_file_paths()))
     LOGGER.debug("Commit message:\n" + other_lag.get_commit_msg())
     lint_commit_and_push = lint_commit_and_push or gi.commit_and_push(other_lag.get_file_paths(), other_lag.get_commit_msg())
-
-    pr_gi.create_progress_bar(90)
 
     """" Update the Pull Request Agent's memory """
     LOGGER.debug("Updating the Pull Request Agent's memory...")
@@ -191,13 +170,12 @@ def main(event: dict):
 
     pr_agent.make_summary()
     pr_agent.make_title()
-
-    pr_gi.create_progress_bar(99)
-
     pr_agent.write_response()
 
     LOGGER.debug("Updating pull request...")
-    pr_gi.comment_pull_request(pr_agent.get_summary())
+    pr_gi = PRGitHandler(pr_number)
+    resp = pr_gi.comment_pull_request(pr_agent.get_summary())
+    LOGGER.debug(resp)
 
 if __name__ == "__main__":
     main()
