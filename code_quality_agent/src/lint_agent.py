@@ -156,12 +156,13 @@ class LintAgent(CodeQualityAgent):
         else:
             pass
 
-    def improve_code(self):
+    def improve_code(self, pr_git_handler, index, increment):
         """
         Given a task, returns the improved code using the OpenAI API.
         """
         if self.language in self.highlighted_languages:
-            for task in self.tasks:
+            for n, task in enumerate(self.tasks):
+                pr_git_handler.update_progress_bar(index + n * increment)
                 file_path, task_description = task
                 LOGGER.debug("Improving " + file_path + "...")
                 with open(file_path, "r") as file:
@@ -174,7 +175,8 @@ class LintAgent(CodeQualityAgent):
                 improved_source_code = get_completion(prompt)
                 self.improved_source_code.append((file_path, improved_source_code))
         else:
-            for file in self.file_list:
+            for n, file in enumerate(self.file_list):
+                pr_git_handler.update_progress_bar(index + n * increment)
                 file_path = os.path.join(self.directory, file)
                 with open(file_path, "r") as file:
                     code = file.read()

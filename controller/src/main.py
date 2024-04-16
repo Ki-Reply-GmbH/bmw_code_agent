@@ -99,8 +99,6 @@ def main(event: dict):
         mag.make_prompt(file_path, file_content)
         LOGGER.debug("Ai is solving the merge conflict in %s...", mgh.get_unmerged_filepaths()[i])
         resp = mag.solve_merge_conflict()
-        
-    pr_gi.create_progress_bar(25)
 
     LOGGER.debug("Committing changes...")
     gi.write_responses(mag.get_file_paths(), mag.get_responses())
@@ -117,9 +115,14 @@ def main(event: dict):
             mag.get_commit_msg()
         )
 
-    pr_gi.create_progress_bar(30)
-
     """ Interaction with the Code Quality Agent """
+    other_file_list = [file for file in updated_file_list if ".java" not in file]
+    # Kennzahlen, um den Progress zu berechnen; LintAgent Progress in {x | 0.2 <= x <= 0.9}
+    java_proportion =  0,7 * (len(updated_file_list) / len(other_file_list))
+    other_proportion = 0,7 * (1 - java_proportion)
+    java_increment_per_file = java_proportion / len(updated_file_list)
+    other_increment_per_file = other_proportion / len(other_file_list)
+
     LOGGER.debug("Interaction with the Code Quality Agent...")
     ja_lag = LintAgent(
         file_list= updated_file_list,
@@ -128,8 +131,7 @@ def main(event: dict):
         )
 
     LOGGER.debug("Improving Java code...")
-    ja_lag.improve_code()
-    pr_gi.create_progress_bar(60)
+    ja_lag.improve_code(pr_gi, 20, java_increment_per_file)
     LOGGER.debug("Writing changes...")
     ja_lag.write_changes()
     print(ja_lag)
@@ -139,8 +141,6 @@ def main(event: dict):
     LOGGER.debug("File paths:\n" + str(ja_lag.get_file_paths()))
     LOGGER.debug("Commit message:\n" + ja_lag.get_commit_msg())
     lint_commit_and_push = gi.commit_and_push(ja_lag.get_file_paths(), ja_lag.get_commit_msg())
-
-    pr_gi.create_progress_bar(65)
 
     """
     py_lag = LintAgent(
@@ -155,7 +155,6 @@ def main(event: dict):
     print(py_lag)
     """
 
-    other_file_list = [file for file in updated_file_list if ".java" not in file]
     other_lag = LintAgent(
         file_list= other_file_list,
         directory=gi.get_tmp_path(),
@@ -163,8 +162,7 @@ def main(event: dict):
         ) 
 
     LOGGER.debug("Improving other code...")
-    other_lag.improve_code()
-    pr_gi.create_progress_bar(75)
+    other_lag.improve_code(pr_gi, java_proportion*100 + 20, other_increment_per_file)
     LOGGER.debug("Writing changes...")
     other_lag.write_changes()
     print(other_lag)
@@ -191,8 +189,6 @@ def main(event: dict):
 
     pr_agent.make_summary()
     pr_agent.make_title()
-
-    pr_gi.create_progress_bar(99)
 
     pr_agent.write_response()
 
