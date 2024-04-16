@@ -118,8 +118,8 @@ def main(event: dict):
     """ Interaction with the Code Quality Agent """
     other_file_list = [file for file in updated_file_list if ".java" not in file]
     # Kennzahlen, um den Progress zu berechnen; LintAgent Progress in {x | 0.2 <= x <= 0.9}
-    java_proportion =  0,7 * (len(updated_file_list) / len(other_file_list))
-    other_proportion = 0,7 * (1 - java_proportion)
+    java_proportion =  0.7 * (len(updated_file_list) / len(other_file_list))
+    other_proportion = 0.7 * (1 - java_proportion)
     java_increment_per_file = java_proportion / len(updated_file_list)
     other_increment_per_file = other_proportion / len(other_file_list)
 
