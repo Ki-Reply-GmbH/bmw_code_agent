@@ -118,10 +118,8 @@ def main(event: dict):
     """ Interaction with the Code Quality Agent """
     other_file_list = [file for file in updated_file_list if ".java" not in file]
     # Kennzahlen, um den Progress zu berechnen; LintAgent Progress in {x | 0.2 <= x <= 0.9}
-    java_proportion =  0.7 * (len(updated_file_list) / len(other_file_list))
-    other_proportion = 0.7 * (1 - java_proportion)
-    java_increment_per_file = java_proportion / len(updated_file_list)
-    other_increment_per_file = other_proportion / len(other_file_list)
+    progress_increment_per_file = 70.0 / len(updated_file_list)
+    quant_java_files =  len(updated_file_list) - len(other_file_list)
 
     LOGGER.debug("Interaction with the Code Quality Agent...")
     ja_lag = LintAgent(
@@ -131,7 +129,7 @@ def main(event: dict):
         )
 
     LOGGER.debug("Improving Java code...")
-    ja_lag.improve_code(pr_gi, 20, java_increment_per_file)
+    ja_lag.improve_code(pr_gi, 20, progress_increment_per_file)
     LOGGER.debug("Writing changes...")
     ja_lag.write_changes()
     print(ja_lag)
@@ -162,7 +160,12 @@ def main(event: dict):
         ) 
 
     LOGGER.debug("Improving other code...")
-    other_lag.improve_code(pr_gi, java_proportion*100 + 20, other_increment_per_file)
+    other_lag.improve_code(
+        pr_gi,
+        quant_java_files * progress_increment_per_file + 20,
+        progress_increment_per_file
+        )
+    
     LOGGER.debug("Writing changes...")
     other_lag.write_changes()
     print(other_lag)

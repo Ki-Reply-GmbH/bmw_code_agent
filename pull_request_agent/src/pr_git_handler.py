@@ -74,7 +74,7 @@ class PRGitHandler(GitHandler):
         progress_bar = "[" + "#" * progress_blocks + "-" * (bar_length - progress_blocks) + "]"
 
         # Add the percentage to the progress bar
-        progress_bar += f" {percentage}%"
+        progress_bar += " {:.1f}%".format(percentage)
 
         self.create_or_update_comment(progress_bar)
 
