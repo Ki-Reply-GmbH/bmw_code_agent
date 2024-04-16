@@ -2,70 +2,81 @@ import requests
 import json
 import re
 import os
+import logging
 from controller.src.git_handler import GitHandler
+
+LOGGER = logging.getLogger(__name__)
+logging.basicConfig(level=logging.DEBUG)
 
 class PRGitHandler(GitHandler):
     def __init__(self, pr_number) -> None:
         self._pr_number = pr_number
+        self.comment_id = None
 
     def get_pr_number(self):
         return self._pr_number
-    
+
+    def create_or_update_comment(self, comment: str):
+        headers = {
+            "Content-type": "application/json",
+            "Accept": "application/json",
+            "Authorization": "token {token}".format(token=self._token)
+        }
+        LOGGER.debug("Comment ID: " + str(self.comment_id))
+        LOGGER.debug("create_or_update_comment: " + comment)
+
+        if self.comment_id is None:
+            # Create a new comment
+            url = "https://" + os.environ["GIT_BASE_URL"] + "/api/v3/repos/{owner}/{repo}/issues/{issue_number}/comments".format(
+                owner=self._owner,
+                repo=self._repo_name,
+                issue_number=self._pr_number  # Pull requests are considered as issues in terms of comments
+            )
+            data = {"body": comment}
+            response = requests.post(url, headers=headers, data=json.dumps(data))
+            if response.status_code == 201:
+                LOGGER.debug("Response:")
+                LOGGER.debug(response.json())
+                self.comment_id = response.json().get("id")
+            else:
+                LOGGER.debug(f"Failed to create comment: {response.status_code}, {response.text}")
+        else:
+            # Update the existing comment
+            url = "https://" + os.environ["GIT_BASE_URL"] + "/api/v3/repos/{owner}/{repo}/issues/comments/{comment_id}".format(
+                owner=self._owner,
+                repo=self._repo_name,
+                comment_id=self.comment_id 
+            )
+            data = {"body": comment}
+            response = requests.patch(url, headers=headers, data=json.dumps(data))
+            if response.status_code == 200:
+                LOGGER.debug("Response:")
+                LOGGER.debug(response.json())
+                LOGGER.debug("Comment updated successfully.")
+            else:
+                LOGGER.debug(f"Failed to update comment: {response.status_code}, {response.text}")
+
     def comment_pull_request(self, comment: str):
         comment += "\n\nPlease review the changes on the branch {}.".format(
             self._unique_feature_branch_name
             )
         comment = self.shorten_file_paths(comment)
-        data = {
-            "body": comment
-        }
-        url = "https://atc-github.azure.cloud.bmw/api/v3/repos/{owner}/{repo}/issues/{issue_number}/comments".format(
-            owner=self._owner,
-            repo=self._repo_name,
-            issue_number=self._pr_number  # Pull requests are considered as issues in terms of comments
-        )
-        headers = {
-            "Content-type": "application/json",
-            "Accept": "application/json",
-            "Authorization": "token {token}".format(token=self._token)
-        }
-        resp = requests.post(url, data=json.dumps(data), headers=headers)
-        
-        if resp.status_code == 201:
-            return resp.json()
-        else:
-            print(f"Request failed with status code {resp.status_code}")
-            return resp.text
+        self.create_or_update_comment(comment)
 
-    def update_pull_request(self, title: str, body: str):
-        data = {
-            "title": title,
-            "body": body
-        }
-        #url = "https://atc-github.azure.cloud.bmw/api/v3/repos/{owner}/{repo}/pulls/{pr_number}".format(
-        url = "https://" + os.environ["GIT_BASE_URL"] + "/api/v3/repos/{owner}/{repo}/pulls/{pr_number}".format(
-            owner=self._owner,
-            repo=self._repo_name,
-            pr_number=self._pr_number
-        )
-        headers = {
-            "Content-type": "application/json",
-            "Accept": "application/json",
-            "Authorization": "token {token}".format(token=self._token)
-            }
-        resp = requests.patch(url, data=json.dumps(data), headers=headers)
+    def create_progress_bar(self, percentage):
+        # Define the length of the progress bar
+        bar_length = 20
 
-        print("owner: " + self._owner)
-        print("repo_name: " + self._repo_name)
-        print("pr_number: " + str(self._pr_number))
-        print("token: " + self._token)
-        print("url: " + url)
+        # Calculate the number of progress blocks
+        progress_blocks = int(percentage / 100 * bar_length)
 
-        if resp.status_code == 200:
-            return resp.json()
-        else:
-            print(f"Request failed with status code {resp.status_code}")
-            return resp.text
+        # Create the progress bar
+        progress_bar = "[" + "#" * progress_blocks + "-" * (bar_length - progress_blocks) + "]"
+
+        # Add the percentage to the progress bar
+        progress_bar += f" {percentage}%"
+
+        self.create_or_update_comment(progress_bar)
 
     def shorten_file_paths(self, input_string):
         """
