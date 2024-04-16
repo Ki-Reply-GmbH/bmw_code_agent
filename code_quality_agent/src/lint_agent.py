@@ -162,7 +162,7 @@ class LintAgent(CodeQualityAgent):
         """
         if self.language in self.highlighted_languages:
             for n, task in enumerate(self.tasks):
-                pr_git_handler.update_progress_bar(index + n * increment)
+                pr_git_handler.create_progress_bar(index + n * increment)
                 file_path, task_description = task
                 LOGGER.debug("Improving " + file_path + "...")
                 with open(file_path, "r") as file:
@@ -176,7 +176,7 @@ class LintAgent(CodeQualityAgent):
                 self.improved_source_code.append((file_path, improved_source_code))
         else:
             for n, file in enumerate(self.file_list):
-                pr_git_handler.update_progress_bar(index + n * increment)
+                pr_git_handler.create_progress_bar(index + n * increment)
                 file_path = os.path.join(self.directory, file)
                 with open(file_path, "r") as file:
                     code = file.read()
