@@ -8,7 +8,7 @@ from flask import abort
 
 class WebhookHandler:
     #TODO Check that pull request was opened, not closed.
-    def __init__(self, event, csv_file_path):
+    def __init__(self, event, csv_file_path=None):
         self._event = event
         self._csv_file_path = csv_file_path
         self._pull_request_event = self._extract_pull_request_event()
@@ -145,17 +145,6 @@ class WebhookHandler:
 
         files = response.json()
         
-        #TODO Don't add files that were deleted in the p.r.
-        # => Full file path and check for os.path.exist
         print("Debug: Changed files:")
         self.changed_files = [file["filename"] for file in files]
         print(self.changed_files)
-        """
-        self.changed_files = ['demo/Calculator.java',
-            'demo/gcdm-ms-file-generator-web/src/main/FileGeneratorResource.java',
-            'demo/gcdm-ms-file-generator-web/src/main/UserProcessorResource.java',
-            'demo/gcdm-ms-file-generator-web/src/main/VehicleProcessorResource.java'
-            ]
-
-            optima-coding-mentor-789f7fd6c8-2dggn
-        """
