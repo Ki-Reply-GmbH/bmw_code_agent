@@ -8,7 +8,7 @@ from flask import abort
 
 class WebhookHandler:
     #TODO Check that pull request was opened, not closed.
-    def __init__(self, event, csv_file_path=None):
+    def __init__(self, event, csv_file_path="./.webhooks.csv"):
         self._event = event
         self._csv_file_path = csv_file_path
         self._pull_request_event = self._extract_pull_request_event()

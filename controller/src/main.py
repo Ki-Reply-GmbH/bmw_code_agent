@@ -21,7 +21,7 @@ def main(event: dict):
     token = os.environ["GIT_ACCESS_TOKEN"]
 
     # Initialize WebhookHandler
-    wh = WebhookHandler(event, "./.webhooks.csv")
+    wh = WebhookHandler(event)
     wh.get_changed_files(
         token=token
         )
@@ -79,7 +79,7 @@ def main(event: dict):
     gi.clone()
     pr_gi.create_progress_bar(
         percentage=0,
-        status="Processing webhook information ..."
+        status="Processing webhook information."
         )
 
     updated_file_list = not_deleted_files(gi.get_tmp_path(), file_list)
@@ -93,7 +93,7 @@ def main(event: dict):
     """ Interaction with the Merge Agent"""
     pr_gi.create_progress_bar(
         percentage=10,
-        status="Checking for merge conflicts ..."
+        status="Checking for merge conflicts."
         )
     mgh = MergeGitHandler()
     mag = MergeAgent(gi._repo)
@@ -183,7 +183,7 @@ def main(event: dict):
 
     pr_gi.create_progress_bar(
         percentage=90,
-        status="Updating the pull request comment ..."
+        status="Updating the pull request comment."
         )
 
     """" Update the Pull Request Agent's memory """
