@@ -25,7 +25,8 @@ def webhook():
         with open(db_path, "r") as f:
             reader = csv.reader(f)
             for row in reader:
-                if row[0] == repo_name and row[1] == pr_number:
+                split_row = row[0].split(";")
+                if split_row[0] == repo_name and split_row[1] == pr_number:
                     return "Event arrived already", 200
 
         # If not, add the event to the database and call main
