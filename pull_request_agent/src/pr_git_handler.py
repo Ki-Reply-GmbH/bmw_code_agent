@@ -63,7 +63,7 @@ class PRGitHandler(GitHandler):
         comment = self.shorten_file_paths(comment)
         self.create_or_update_comment(comment)
 
-    def create_progress_bar(self, percentage):
+    def create_progress_bar(self, percentage, status=""):
         # Define the length of the progress bar
         bar_length = 20
 
@@ -75,6 +75,10 @@ class PRGitHandler(GitHandler):
 
         # Add the percentage to the progress bar
         progress_bar += " {:.1f}%".format(percentage)
+
+        # Add the status to the progress bar
+        if status:
+            progress_bar += " - " + str(status)
 
         self.create_or_update_comment(progress_bar)
 

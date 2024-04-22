@@ -40,7 +40,6 @@ def main(event: dict):
     
     # Initializing PRGitHandler
     pr_gi = PRGitHandler(pr_number)
-    pr_gi.create_progress_bar(0)
     
     LOGGER.debug("Retrieved information from webhook:\n%s\n%s\n%s\n%s\n%s\n%s\n",
                  owner,
@@ -78,8 +77,10 @@ def main(event: dict):
     )
     gi.clean_up()
     gi.clone()
-
-    pr_gi.create_progress_bar(10)
+    pr_gi.create_progress_bar(
+        percentage=0,
+        status="Processing webhook information ..."
+        )
 
     updated_file_list = not_deleted_files(gi.get_tmp_path(), file_list)
     LOGGER.debug("Updated file list:\n%s\n",
@@ -90,6 +91,10 @@ def main(event: dict):
     pr_agent = PRAgent()
 
     """ Interaction with the Merge Agent"""
+    pr_gi.create_progress_bar(
+        percentage=10,
+        status="Checking for merge conflicts ..."
+        )
     mgh = MergeGitHandler()
     mag = MergeAgent(gi._repo)
 
@@ -176,7 +181,10 @@ def main(event: dict):
     LOGGER.debug("Commit message:\n" + other_lag.get_commit_msg())
     lint_commit_and_push = lint_commit_and_push or gi.commit_and_push(other_lag.get_file_paths(), other_lag.get_commit_msg())
 
-    pr_gi.create_progress_bar(90)
+    pr_gi.create_progress_bar(
+        percentage=90,
+        status="Updating the pull request comment ..."
+        )
 
     """" Update the Pull Request Agent's memory """
     LOGGER.debug("Updating the Pull Request Agent's memory...")
