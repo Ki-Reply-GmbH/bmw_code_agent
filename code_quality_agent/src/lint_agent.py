@@ -18,7 +18,7 @@ client = AzureOpenAI(
     azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
     http_client=httpx.Client(
         proxies=os.environ["HTTPS_PROXY"],
-        timeout=httpx.Timeout(60.0, read=60.0)
+        timeout=httpx.Timeout(300.0, read=300.0)
     )
 )
 
