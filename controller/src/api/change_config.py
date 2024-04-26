@@ -1,7 +1,8 @@
 import json
 import os
 import base64
-from flask import Blueprint, request, abort
+import threading
+from flask import Blueprint, request, abort, jsonify
 from controller.src.main import main
 
 change_config_blueprint = Blueprint("change_config", __name__)
@@ -28,12 +29,13 @@ def change_config():
                     text_deployment = event["body"]["TEXT-DEPLOYMENT"]
                     git_repo = event["body"]["GIT-REPO"]
                     pr_number = event["body"]["PR-NUMBER"]
-                    main(json_deployment, text_deployment, git_repo, pr_number)
-                    return "sucess", 200
+                    thread = threading.Thread(target=main, args=(json_deployment, text_deployment, git_repo, pr_number))
+                    thread.start()
+                    return jsonify({"message": "Success"}), 200
                 else:
-                    return "Unauthorized", 401
+                    return jsonify({"message": "Unauthorized"}), 401
             else:
-                return "Invalid Authorization", 401
+                return jsonify({"message": "Invalid Authorization"}), 401
     else:
         abort(400)
     
