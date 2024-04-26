@@ -13,7 +13,7 @@ client = AzureOpenAI(
     )
 )
 
-def get_completion(prompt, model=os.environ["TEXT-DEPLOYMENT"], type="text"):
+def get_completion(prompt, model="GCDM-EMEA-GPT4", type="text"):
     """
     Sends a prompt to the OpenAI API and returns the AI"s response.
     """
@@ -36,7 +36,7 @@ def get_completion(prompt, model=os.environ["TEXT-DEPLOYMENT"], type="text"):
     return response.choices[0].message.content
 
 class PRAgent:
-    def __init__(self):
+    def __init__(self, json_model="GCDM-EMEA-GPT4-1106", text_model="GCDM-EMEA-GPT4"):
         self.memory_merge_agent = {
             "files_changed": [],
             "code_changes": [],
@@ -49,6 +49,9 @@ class PRAgent:
         }
         self.response = ""
         self.title = ""
+
+        self.json_model = json_model
+        self.text_model = text_model
     
     def get_summary(self):
         return self.response
@@ -71,7 +74,8 @@ class PRAgent:
             prompts.pr_user_prompt.format(
                 memory_merge_agent=self.memory_merge_agent,
                 memory_cq_agent=self.memory_cq_agent
-                )
+                ),
+            model=self.text_model
             )
         self.response = response
     
@@ -79,7 +83,8 @@ class PRAgent:
         response = get_completion(
             prompts.pr_title_system_prompt.format(
                 prev_responses=self.response
-            )
+            ),
+            model=self.text_model
         )
         self.title = response
 

@@ -2,6 +2,7 @@ import json
 import os
 import base64
 from flask import Blueprint, request, abort
+from controller.src.main import main
 
 change_config_blueprint = Blueprint("change_config", __name__)
 
@@ -23,10 +24,11 @@ def change_config():
                 username, password = auth_string.split(":")
                 if username == os.environ["OPTIMA-FE-USERNAME"] \
                    and password == os.environ["OPTIMA-FE-PASSWORD"]:
-                    # Ändert die env-Variables für jeden SW-User, der den Kubernetes Pod
-                    # nutzt. Sollte geändert werden, wenn das Projekt über PoC hinausgeht.
-                    os.environ["JSON-DEPLOYMENT"] = event["body"]["JSON-DEPLOYMENT"]
-                    os.environ["TEXT-DEPLOYMENT"] = event["body"]["TEXT-DEPLOYMENT"]
+                    json_deployment = event["body"]["JSON-DEPLOYMENT"]
+                    text_deployment = event["body"]["TEXT-DEPLOYMENT"]
+                    git_repo = event["body"]["GIT-REPO"]
+                    pr_number = event["body"]["PR-NUMBER"]
+                    main(json_deployment, text_deployment, git_repo, pr_number)
                     return "sucess", 200
                 else:
                     return "Unauthorized", 401

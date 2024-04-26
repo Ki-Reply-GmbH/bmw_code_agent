@@ -1,65 +1,44 @@
 import os
 import logging
-import json
 from controller.src.git_handler import GitHandler
-from controller.src.helper import not_deleted_files
+from controller.src.helper import not_deleted_files, get_changed_files, get_pr_branches
 from merge_agent.src.merge_git_handler import MergeGitHandler
 from pull_request_agent.src.pr_git_handler import PRGitHandler
 from merge_agent.src.merge_agent import MergeAgent
 from code_quality_agent.src.lint_agent import LintAgent
 from pull_request_agent.src.pr_agent import PRAgent
-from controller.src.webhook_handler import WebhookHandler
 
 LOGGER = logging.getLogger(__name__)
 logging.basicConfig(level=logging.DEBUG)
 
-def main(event: dict):
+def main(
+        json_deployment: str,
+        text_deployment: str,
+        git_repo: str,
+        pr_number: str
+        ):
     """ Set up the local git repository """
 
     # Arguments
     git_user = os.environ["GIT_USERNAME"]
     token = os.environ["GIT_ACCESS_TOKEN"]
-
-    # Initialize WebhookHandler
-    wh = WebhookHandler(event)
-    wh.get_changed_files(
-        token=token
+    owner = "GCDM"
+    repo = git_repo
+    source_branch, target_branch = get_pr_branches(
+        git_user,
+        token,
+        git_repo,
+        pr_number
+        )
+    file_list = get_changed_files(
+        token=token,
+        git_owner=owner,
+        git_repo=repo,
+        pr_number=pr_number
         )
 
-    if len(wh.owner) == 0:
-        LOGGER.debug("No new webhooks.")
-        return
-
-    # Information extracted from webhook
-    owner = wh.owner
-    repo = wh.repo
-    source_branch = wh.source_branche
-    target_branch = wh.target_branche
-    pr_number = wh.pr_number
-    file_list = wh.changed_files
-    
     # Initializing PRGitHandler
     pr_gi = PRGitHandler(pr_number)
-    
-    LOGGER.debug("Retrieved information from webhook:\n%s\n%s\n%s\n%s\n%s\n%s\n",
-                 owner,
-                 repo,
-                 source_branch,
-                 target_branch,
-                 pr_number,
-                 str(file_list)
-                )
-    
-
-    LOGGER.debug("Non-critical environment variables:\n%s\n%s\n%s\n%s\n%s\n",
-                 os.environ["OPTIMA-FE-USERNAME"],
-                 os.environ["OPTIMA-FE-PASSWORD"],
-                 os.environ["JSON-DEPLOYMENT"],
-                 os.environ["TEXT-DEPLOYMENT"],
-                 os.environ["GIT_BASE_URL"]
-                 )
-    
-
     gi = GitHandler()
     gi.initialize(
         source_branch,
@@ -70,7 +49,6 @@ def main(event: dict):
         repo,
         pr_number
         )
-
     gi.set_credentials(
         email="optima-coding-mentor@bmw.de",
         name="Optima Coding Mentor"
@@ -81,14 +59,11 @@ def main(event: dict):
         percentage=0,
         status="Processing webhook information."
         )
-
+    
     updated_file_list = not_deleted_files(gi.get_tmp_path(), file_list)
-    LOGGER.debug("Updated file list:\n%s\n",
-                 str(updated_file_list)
-                )
 
     """ Initialize with the Pull Request Agent """
-    pr_agent = PRAgent()
+    pr_agent = PRAgent(json_model=json_deployment, text_model=text_deployment)
 
     """ Interaction with the Merge Agent"""
     pr_gi.create_progress_bar(
@@ -96,7 +71,7 @@ def main(event: dict):
         status="Checking for merge conflicts."
         )
     mgh = MergeGitHandler()
-    mag = MergeAgent(gi._repo)
+    mag = MergeAgent(gi._repo, json_model=json_deployment, text_model=text_deployment)
 
     LOGGER.debug("Initialized GitHandler and Agents")
     for i, file_path in enumerate(mgh.get_unmerged_filepaths()):
@@ -130,7 +105,9 @@ def main(event: dict):
     ja_lag = LintAgent(
         file_list= updated_file_list,
         directory=gi.get_tmp_path(),
-        language="java"
+        language="java",
+        json_model=json_deployment,
+        text_model=text_deployment
         )
 
     LOGGER.debug("Improving Java code...")
@@ -161,7 +138,9 @@ def main(event: dict):
     other_lag = LintAgent(
         file_list= other_file_list,
         directory=gi.get_tmp_path(),
-        language="other"
+        language="other",
+        json_model=json_deployment,
+        text_model=text_deployment
         ) 
 
     LOGGER.debug("Improving other code...")

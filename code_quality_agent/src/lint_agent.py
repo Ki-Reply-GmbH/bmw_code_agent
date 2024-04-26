@@ -22,7 +22,7 @@ client = AzureOpenAI(
     )
 )
 
-def get_completion(prompt, model=os.environ["JSON-DEPLOYMENT"], type="json_object"):
+def get_completion(prompt, model="GCDM-EMEA-GPT4-1106", type="json_object"):
     """
     Sends a prompt to the OpenAI API and returns the AI"s response.
     """
@@ -45,7 +45,14 @@ def get_completion(prompt, model=os.environ["JSON-DEPLOYMENT"], type="json_objec
     return response.choices[0].message.content
 
 class LintAgent(CodeQualityAgent):
-    def __init__(self, file_list, directory, language):
+    def __init__(
+            self,
+            file_list,
+            directory,
+            language,
+            json_model="GCDM-EMEA-GPT4-1106",
+            text_model="GCDM-EMEA-GPT4"
+            ):
         super().__init__(file_list)
         self.highlighted_languages = ["python", "java", "java-local"]
         self.directory = directory
@@ -54,6 +61,8 @@ class LintAgent(CodeQualityAgent):
         self.improved_source_code = []
         self.language = language
         self.commit_msg = ""
+        self.json_model = json_model
+        self.text_model = text_model
 
         self.check_code()
         self.create_tasks()
@@ -176,7 +185,7 @@ class LintAgent(CodeQualityAgent):
                 print("Calling OpenAI API for " + file_path + "...")
                 print(prompt)
                 print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-                improved_source_code = get_completion(prompt)
+                improved_source_code = get_completion(prompt, model=self.json_model)
                 self.improved_source_code.append((file_path, improved_source_code))
         else:
             for n, file in enumerate(self.file_list):
@@ -191,7 +200,7 @@ class LintAgent(CodeQualityAgent):
                 print("Calling OpenAI API for " + file_path + "...")
                 print(prompt)
                 print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-                improved_source_code = get_completion(prompt)
+                improved_source_code = get_completion(prompt, model=self.json_model)
                 self.improved_source_code.append((file_path, improved_source_code))
 
 
@@ -221,7 +230,7 @@ class LintAgent(CodeQualityAgent):
         print("Commit Prompt: " + prompts.commit_prompt.format(tasks=tasks))
         self.commit_msg = get_completion(
             prompts.commit_prompt.format(tasks=tasks),
-            model=os.environ["TEXT-DEPLOYMENT"],
+            model=self.text_model,
             type="text"
             )
 

@@ -34,7 +34,7 @@ client = AzureOpenAI(
     )
 )
 
-def get_completion(prompt, model=os.environ["JSON-DEPLOYMENT"], type="json_object"): # make global env variable that's used for the model
+def get_completion(prompt, model="GCDM-EMEA-GPT4-1106", type="json_object"): # make global env variable that's used for the model
     """
     Sends a prompt to the OpenAI API and returns the AI"s response.
     """
@@ -68,7 +68,7 @@ class MergeAgent():
     6. Creating a pull request in the downstream repository.
     """
 
-    def __init__(self, repo):
+    def __init__(self, repo, json_model="GCDM-EMEA-GPT4-1106", text_model="GCDM-EMEA-GPT4"):
         """
         Initializes the Agent with two Git repositories: downstream and upstream.
 
@@ -90,6 +90,9 @@ class MergeAgent():
         self.explanations = []
         self.responses = []
         self.commit_msg = ""
+
+        self.json_model = json_model
+        self.text_model = text_model
 
         self._cache = Cache()
 
@@ -144,7 +147,7 @@ class MergeAgent():
             response = ast.literal_eval(response) #Prevent json.loads from throwing an error
         else:
             print("Cache miss!")
-            response = json.loads(get_completion(self._prompt, type="json_object"))
+            response = json.loads(get_completion(self._prompt, model=self.json_model ,type="json_object"))
             self._cache.update(
                 base64_prompt,
                 encode_to_base64(response)
@@ -169,7 +172,7 @@ class MergeAgent():
             commit_prompt += explanation + "\n"
         self.commit_msg = get_completion(
             commit_prompt,
-            model=os.environ["TEXT-DEPLOYMENT"],
+            model=self.text_model,
             type="text"
             )
 
