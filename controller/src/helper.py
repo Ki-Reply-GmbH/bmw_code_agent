@@ -49,7 +49,7 @@ def not_deleted_files(tmp_path, changed_files):
     
     return actually_changed_files
 
-def get_pr_branches(username, token, repo, pr_number):
+def get_pr_branches(username, token, owner, repo, pr_number):
     """
     This function retrieves the source and target branches of a Pull Request.
 
@@ -64,7 +64,7 @@ def get_pr_branches(username, token, repo, pr_number):
                If the Pull Request does not exist or an error occurs, it returns (None, None).
     """
     base_url = os.environ["GIT_BASE_URL"]
-    url = f"https://{base_url}/api/v3/repos/{username}/{repo}/pulls/{pr_number}"
+    url = f"https://{base_url}/api/v3/repos/{owner}/{repo}/pulls/{pr_number}"
     response = requests.get(url, auth=(username, token))
 
     if response.status_code == 200:

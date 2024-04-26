@@ -27,6 +27,7 @@ def main(
     source_branch, target_branch = get_pr_branches(
         git_user,
         token,
+        owner,
         git_repo,
         pr_number
         )
