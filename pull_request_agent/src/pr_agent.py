@@ -1,17 +1,5 @@
-import os
 import pull_request_agent.src.prompts as prompts
-import httpx
-from openai import AzureOpenAI
-
-client = AzureOpenAI(
-    api_key=os.getenv("OPENAI_API_KEY"),
-    api_version="2024-02-01",
-    azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
-    http_client=httpx.Client(
-        proxies=os.environ["HTTPS_PROXY"],
-        timeout=httpx.Timeout(600.0, read=600.0)
-    )
-)
+import openai
 
 def get_completion(prompt, model="GCDM-EMEA-GPT4", type="text"):
     """
@@ -20,17 +8,17 @@ def get_completion(prompt, model="GCDM-EMEA-GPT4", type="text"):
     messages = [
         {
             "role": "system",
-            "content": "You are a system designed to improve code quality."
+            "content": "You are a system designed to write comments for a GitHub Pull Request."
         },
         {
             "role": "user",
             "content": prompt
         }
     ]
-    response = client.chat.completions.create(
+    response = openai.OpenAI().chat.completions.create(
         model=model,
         messages=messages,
-        temperature=0, # this is the degree of randomness of the model"s output,
+        temperature=0, # this is the degree of randomness of the model's output,
         response_format={"type": type}
     )
     return response.choices[0].message.content

@@ -5,22 +5,11 @@ import json
 import logging
 from collections import defaultdict
 import code_quality_agent.src.prompts as prompts
-import httpx
-from openai import AzureOpenAI
+import openai
 from . import CodeQualityAgent
 
 LOGGER = logging.getLogger(__name__)
 logging.basicConfig(level=logging.DEBUG)
-
-client = AzureOpenAI(
-    api_key=os.getenv("OPENAI_API_KEY"),
-    api_version="2024-02-01",
-    azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
-    http_client=httpx.Client(
-        proxies=os.environ["HTTPS_PROXY"],
-        timeout=httpx.Timeout(600.0, read=600.0)
-    )
-)
 
 def get_completion(prompt, model="GCDM-EMEA-GPT4-1106", type="json_object"):
     """
@@ -36,10 +25,10 @@ def get_completion(prompt, model="GCDM-EMEA-GPT4-1106", type="json_object"):
             "content": prompt
         }
     ]
-    response = client.chat.completions.create(
+    response = openai.OpenAI().chat.completions.create(
         model=model,
         messages=messages,
-        temperature=0, # this is the degree of randomness of the model"s output,
+        temperature=0, # this is the degree of randomness of the model's output,
         response_format={"type": type}
     )
     return response.choices[0].message.content
