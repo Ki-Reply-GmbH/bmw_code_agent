@@ -6,6 +6,12 @@ linter's suggestions for improving the code. Based on the linter's suggestions, 
 return the improved source code. Try to improve the code quality independently \
 and don't necessarily implement the linter suggestions 1:1.
 
+While improving the code, please adhere to the following constraints:
+- Do not change any names
+- Do not modify any HTML and/or XML code
+- Only make changes to local code (code inside functions and methods)
+- Do not modify code that might be accessed in other files
+
 Proceed as follows:
 1. Analyze the source code and identify traditional coding \
 conventions in the code.
@@ -33,6 +39,12 @@ lint_prompt_not_highlighted = """
 You will get source code separated by ####. If necessary improve the code \
 quality of the source code. If the code is already following best practices,\
 tell me that you didn't change anything.
+
+While improving the code, please adhere to the following constraints:
+- Do not change any names
+- Do not modify any HTML and/or XML code
+- Only make changes to local code (code inside functions and methods)
+- Do not modify code that might be accessed in other files
 
 Proceed as follows:
 1. Analyze the source code and identify the language.
