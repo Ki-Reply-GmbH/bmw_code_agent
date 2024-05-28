@@ -81,5 +81,8 @@ class PRAgent:
             f.write(self.title + "\n")
             f.write(self.response)
 
+    def report_error(self, error_message):
+        self.response = error_message
+
     def __str__(self):
         return f"Merge Agent Memory: {self.memory_merge_agent}\nCode Quality Agent Memory: {self.memory_cq_agent}"
