@@ -6,10 +6,16 @@ linter's suggestions for improving the code. Based on the linter's suggestions, 
 return the improved source code. Try to improve the code quality independently \
 and don't necessarily implement the linter suggestions 1:1.
 
+While improving the code, please adhere to the following constraints:
+- Do not change any names
+- Do not modify any HTML and/or XML code
+- Only make changes to local code (code inside functions and methods)
+- Do not modify code that might be accessed in other files
+
 Proceed as follows:
 1. Analyze the source code and identify traditional coding \
 conventions in the code.
-2. Formulate a plan to improve the code quality.
+2. Formulate a plan to improve the code quality and follow the previosuly mentioned constraints.
 3. Evaluate the linter suggestions and compare them with your plan.
 4. Apply changes that improve code quality and maintain the current coding \
 convention if one is found. Do not add placeholders in your code, even if the \
@@ -19,6 +25,8 @@ Make sure to use the insights from points 2. and 3..
 5. Ensure that the solution you found is compilable or interpretable, and does not \
 contain placeholders or incomplete package structures.
 6. Return a json object with 2 keys, "improved_source_code" and "explanation". \
+7. Make sure that the previously mentioned constrains are met. If not, please \
+revise the result so that the constraints are met.
 
 ####
 source code:
@@ -34,10 +42,16 @@ You will get source code separated by ####. If necessary improve the code \
 quality of the source code. If the code is already following best practices,\
 tell me that you didn't change anything.
 
+While improving the code, please adhere to the following constraints:
+- Do not change any names
+- Do not modify any HTML and/or XML code
+- Only make changes to local code (code inside functions and methods)
+- Do not modify code that might be accessed in other files
+
 Proceed as follows:
 1. Analyze the source code and identify the language.
 2. Formulate a plan to improve the code quality, following best practices for \
-that language.
+that language and the previosuly mentioned constraints.
 3. Apply changes that improve code quality and maintain the current coding \
 convention if one is found. Do not add placeholders in your code. The source \
 code must be compilable or interpretable. Avoid creating a package structure \
@@ -45,6 +59,8 @@ that would require placeholders. \
 5. Ensure that the solution you found is compilable or interpretable, and does not \
 contain placeholders or incomplete package structures.
 6. Return a json object with 2 keys, "improved_source_code" and "explanation". \
+7. Make sure that the previously mentioned constrains are met. If not, please \
+revise the result so that the constraints are met.
 
 ####
 source code:

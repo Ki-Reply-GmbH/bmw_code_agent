@@ -88,6 +88,9 @@ class PRAgent:
         )
         self.title = response
 
+    def report_error(self, error_message):
+        self.response = error_message
+
     def write_response(self):
         with open("response.txt", "w") as f:
             f.write(self.title + "\n")
