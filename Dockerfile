@@ -6,9 +6,9 @@ FROM debian:sid
 COPY ./ /bmw_code_agent/
 WORKDIR /bmw_code_agent
 
-# Install python3
+# Install python3 and pip
 RUN apt-get -y update
-RUN apt-get install -y python3
+RUN apt-get install -y python3 python3-pip
 
 # Install dependencies
 RUN apt-get -y install git
