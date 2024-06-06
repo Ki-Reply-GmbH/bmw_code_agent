@@ -1,13 +1,16 @@
 # Use adoptopenjdk image as builder
 FROM adoptopenjdk:11-jdk-hotspot as builder
 
-# Use python:3.9 image
-FROM python:3.9
+# Use debian sid image
+FROM sid
 COPY ./ /bmw_code_agent/
 WORKDIR /bmw_code_agent
 
-# Install dependencies
+# Install python3
 RUN apt-get -y update
+RUN apt-get install -y python3
+
+# Install dependencies
 RUN apt-get -y install git
 RUN pip3 install -r requirements.txt
 EXPOSE 5000
