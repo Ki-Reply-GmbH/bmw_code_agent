@@ -2,7 +2,7 @@
 FROM adoptopenjdk:11-jdk-hotspot as builder
 
 # Use debian sid image
-FROM sid
+FROM debian:sid
 COPY ./ /bmw_code_agent/
 WORKDIR /bmw_code_agent
 
