@@ -8,7 +8,7 @@ WORKDIR /bmw_code_agent
 
 # Install python3 and pip
 RUN apt-get -y update
-RUN apt-get install -y python3 python3-pip
+RUN apt-get install -y python3.9 python3-pip
 
 # Install dependencies
 RUN apt-get -y install git
