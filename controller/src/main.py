@@ -92,14 +92,14 @@ def main(
             LOGGER.debug("Commit message:\n" + ja_lag.get_commit_msg())
             gi.commit_and_push(ja_lag.get_file_paths(), ja_lag.get_commit_msg())
 
-        """" Update the Pull Request Agent's memory """
-        LOGGER.debug("Updating the Pull Request Agent's memory...")
-        pr_agent.set_memory(
-            "cq_agent",
-            ja_lag.get_file_paths(),
-            ja_lag.get_responses(),
-            ja_lag.get_commit_msg()
-        )
+            """" Update the Pull Request Agent's memory """
+            LOGGER.debug("Updating the Pull Request Agent's memory...")
+            pr_agent.set_memory(
+                "cq_agent",
+                ja_lag.get_file_paths(),
+                ja_lag.get_responses(),
+                ja_lag.get_commit_msg()
+            )
 
     LOGGER.debug(pr_agent)
 
