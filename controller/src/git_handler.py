@@ -33,7 +33,8 @@ class GitHandler:
         git_user: str,
         owner: str,
         token: str,
-        repo_name: str
+        repo_name: str,
+        agent: str
         ):
         project_root_dir = os.path.dirname(
             os.path.dirname(
@@ -50,6 +51,7 @@ class GitHandler:
         cls._owner = owner
         cls._token = token
         cls._repo_name = repo_name
+        cls._agent = agent
 
     @classmethod
     def clone(cls):
@@ -63,7 +65,10 @@ class GitHandler:
             cls._tmp_path
             )
         cls._repo.git.checkout(cls._source_branch)
-        cls._unique_feature_branch_name = datetime.now().strftime("%Y%m-%d%H-%M%S-") + str(uuid4())
+        if cls._agent == "merge":
+            cls._unique_feature_branch_name = "Ki-MergeAgent-" + datetime.now().strftime("%d%H-%M%S-") + str(uuid4())
+        elif cls._agent == "cq":
+            cls._unique_feature_branch_name = "Ki-CQAgent-" + datetime.now().strftime("%d%H-%M%S-") + str(uuid4())
         cls._feature_branch = cls._repo.create_head(cls._unique_feature_branch_name)
         cls._repo.git.checkout(cls._feature_branch)
         print("Creatured feature branch.")

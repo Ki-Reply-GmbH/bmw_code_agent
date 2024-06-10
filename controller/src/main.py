@@ -18,7 +18,8 @@ def main(
         repo: str,
         source_branch: str,
         target_branch: str,
-        pr_number: int
+        pr_number: int,
+        agent: str
 ):
     """ Set up the local git repository """
 
@@ -37,7 +38,8 @@ def main(
         git_user,
         owner,
         token,
-        repo
+        repo,
+        agent
         )
     gi.clean_up()
     gi.clone()
@@ -45,57 +47,59 @@ def main(
     """ Initialize with the Pull Request Agent """
     pr_agent = PRAgent()
 
-    """ Interaction with the Merge Agent"""
-    mgh = MergeGitHandler()
-    mag = MergeAgent(gi._repo)
+    if agent == "merge":
+        """ Interaction with the Merge Agent"""
+        mgh = MergeGitHandler()
+        mag = MergeAgent(gi._repo)
 
-    LOGGER.debug("Initialized GitHandler and Agents")
+        LOGGER.debug("Initialized GitHandler and Agents")
 
-    for i, file_path in enumerate(mgh.get_unmerged_filepaths()):
-        file_content = mgh.get_f_content(i)
-        mag.make_prompt(file_path, file_content)
-        LOGGER.debug("Ai is solving the merge conflict in %s...", mgh.get_unmerged_filepaths()[i])
-        resp = mag.solve_merge_conflict()
+        for i, file_path in enumerate(mgh.get_unmerged_filepaths()):
+            file_content = mgh.get_f_content(i)
+            mag.make_prompt(file_path, file_content)
+            LOGGER.debug("Ai is solving the merge conflict in %s...", mgh.get_unmerged_filepaths()[i])
+            resp = mag.solve_merge_conflict()
 
-    LOGGER.debug("Committing changes...")
-    gi.write_responses(mag.get_file_paths(), mag.get_responses())
-    mag.make_commit_msg()
-    gi.commit_and_push(mag.get_file_paths(), mag.get_commit_msg())
+            LOGGER.debug("Committing changes...")
+            gi.write_responses(mag.get_file_paths(), mag.get_responses())
+            mag.make_commit_msg()
+            gi.commit_and_push(mag.get_file_paths(), mag.get_commit_msg())
 
-    """ Update the Pull Request Agent's memory """
-    pr_agent.set_memory(
-        "merge_agent",
-        mag.get_file_paths(),
-        mag.get_responses(),
-        mag.get_commit_msg()
-    )
+            """ Update the Pull Request Agent's memory """
+            pr_agent.set_memory(
+                "merge_agent",
+                mag.get_file_paths(),
+                mag.get_responses(),
+                mag.get_commit_msg()
+            )
 
-    """ Interaction with the Code Quality Agent """
-    LOGGER.debug("Interaction with the Code Quality Agent...")
-    ja_lag = LintAgent(directory=gi.get_tmp_path(), language="java-local")
+        if agent == "lint":
+            """ Interaction with the Code Quality Agent """
+            LOGGER.debug("Interaction with the Code Quality Agent...")
+            ja_lag = LintAgent(directory=gi.get_tmp_path(), language="java-local")
 
-    LOGGER.debug("Improving code...")
-    ja_lag.improve_code()
+            LOGGER.debug("Improving code...")
+            ja_lag.improve_code()
 
-    LOGGER.debug("Writing changes...")
-    ja_lag.write_changes()
+            LOGGER.debug("Writing changes...")
+            ja_lag.write_changes()
 
-    print(ja_lag)
+            print(ja_lag)
 
-    LOGGER.debug("Committing changes...")
-    ja_lag.make_commit_msg()
-    LOGGER.debug("File paths:\n" + str(ja_lag.get_file_paths()))
-    LOGGER.debug("Commit message:\n" + ja_lag.get_commit_msg())
-    gi.commit_and_push(ja_lag.get_file_paths(), ja_lag.get_commit_msg())
+            LOGGER.debug("Committing changes...")
+            ja_lag.make_commit_msg()
+            LOGGER.debug("File paths:\n" + str(ja_lag.get_file_paths()))
+            LOGGER.debug("Commit message:\n" + ja_lag.get_commit_msg())
+            gi.commit_and_push(ja_lag.get_file_paths(), ja_lag.get_commit_msg())
 
-    """" Update the Pull Request Agent's memory """
-    LOGGER.debug("Updating the Pull Request Agent's memory...")
-    pr_agent.set_memory(
-        "cq_agent",
-        ja_lag.get_file_paths(),
-        ja_lag.get_responses(),
-        ja_lag.get_commit_msg()
-    )
+        """" Update the Pull Request Agent's memory """
+        LOGGER.debug("Updating the Pull Request Agent's memory...")
+        pr_agent.set_memory(
+            "cq_agent",
+            ja_lag.get_file_paths(),
+            ja_lag.get_responses(),
+            ja_lag.get_commit_msg()
+        )
 
     LOGGER.debug(pr_agent)
 
@@ -116,5 +120,6 @@ if __name__ == "__main__":
         "merge-demo",
         "source_branch",
         "main",
-        2
+        2,
+        agent="merge"
     )
