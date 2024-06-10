@@ -11,29 +11,18 @@ from controller.src.webhooks.webhook_handler import WebhookHandler
 LOGGER = logging.getLogger(__name__)
 logging.basicConfig(level=logging.DEBUG)
 
-def main(event: dict):
+def main(
+        git_user: str,
+        token: str,
+        owner: str,
+        repo: str,
+        source_branch: str,
+        target_branch: str,
+        pr_number: int
+):
     """ Set up the local git repository """
 
-    # Arguments
-    git_user = os.environ["GIT_USERNAME"]
-    token = os.environ["GIT_ACCESS_TOKEN"]
-
-    # Initialize WebhookHandler
-    webhook_url = "http://localhost:5000/optima/api/coding/webhook"
-    wh = WebhookHandler(event, "./.webhooks.csv")
-
-    if len(wh.owner) == 0:
-        LOGGER.debug("No new webhooks.")
-        return
-
-    # Information extracted from webhook
-    owner = wh.owner
-    repo = wh.repo
-    source_branch = wh.source_branche
-    target_branch = wh.target_branche
-    pr_number = wh.pr_number
-    
-    LOGGER.debug("Retrieved information from webhook:\n%s\n%s\n%s\n%s\n%s\n",
+    LOGGER.debug("Permitted information:\n%s\n%s\n%s\n%s\n%s\n",
                  owner,
                  repo,
                  source_branch,
@@ -120,4 +109,12 @@ def main(event: dict):
     LOGGER.debug(resp)
 
 if __name__ == "__main__":
-    main()
+    main(
+        "TimoKubera",
+        "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",
+        "TimoKubera",
+        "merge-demo",
+        "source_branch",
+        "main",
+        2
+    )
