@@ -12,6 +12,7 @@ from datetime import datetime
 from uuid import uuid4
 from controller.src.git_handler import GitHandler
 
+
 class MergeGitHandler(GitHandler):
     """
     A class for handling git operations.
@@ -21,6 +22,7 @@ class MergeGitHandler(GitHandler):
 
     Attributes:
     """
+
     def __init__(self):
         """
         Initializes a GitHandler instance.
@@ -33,12 +35,9 @@ class MergeGitHandler(GitHandler):
             downstream_url (str): The URL of the downstream repository.
             upstream_url (str): The URL of the upstream repository.
         """
-        # Initializing the attributes for the merge conflicts
         self._unmerged_filepaths = []
         self._unmerged_filecontents = []
-
         self._run_workflow()
-
         """     
         def _initialize_repo(self, repo_url: str):
         if os.path.exists(self._tmp_path):
@@ -89,16 +88,11 @@ class MergeGitHandler(GitHandler):
         comparable using the cache.
         """
         for path in self._unmerged_filepaths:
-            full_path = os.path.join(self._tmp_path, path).replace("\\","/")    # Backslashes aus dem path ersetzen, damit es einheitlich ist
+            full_path = os.path.join(self._tmp_path, path).replace('\\', '/')
             with open(full_path) as f:
                 file_content = f.read()
-
-            self._unmerged_filecontents += [
-                file_content.replace(
-                    self._unique_feature_branch_name,
-                    "feature_branch"
-                    )
-                ] #to make the file content comparable using the cache
+            self._unmerged_filecontents += [file_content.replace(self.
+                _unique_feature_branch_name, 'feature_branch')]
     """
     def _clean_up(self):
         for root, dirs, files in os.walk(os.path.join(os.path.dirname(__file__), ".tmp")):
@@ -108,7 +102,7 @@ class MergeGitHandler(GitHandler):
                 os.chmod(os.path.join(root, file), stat.S_IRWXU)
         shutil.rmtree(os.path.join(os.path.dirname(__file__), ".tmp"))
     """
-    
+
     def _try_to_merge(self):
         """
         Tries to merge the main branch into the feature branch.
@@ -126,7 +120,7 @@ class MergeGitHandler(GitHandler):
             return False
         except GitCommandError as e:
             return True
-        
+
     def get_unmerged_filepaths(self):
         """
         Gets the file paths of any unmerged files.
@@ -161,7 +155,7 @@ class MergeGitHandler(GitHandler):
         This method iterates over the file paths in the _unmerged_filepaths attribute and prints each 
         file path. It prints a message before and after printing the file paths.
         """
-        print("\nFound merge conflicts in:")
+        print('\nFound merge conflicts in:')
         for path in self.get_unmerged_filepaths():
             print(path)
         print()

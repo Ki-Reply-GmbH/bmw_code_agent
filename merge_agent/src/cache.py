@@ -11,6 +11,7 @@ import os
 import pandas as pd
 from typing import Optional
 
+
 class Cache:
     """
     A class used to cache prompts and their corresponding answers.
@@ -23,7 +24,9 @@ class Cache:
     prompt and the index of the row is used to name a separate CSV file that stores the answer for 
     the prompt.
     """
-    def __init__(self, cache_folder: str = ".cache", cache_file: str = "prompts.csv") -> None:
+
+    def __init__(self, cache_folder: str='.cache', cache_file: str=
+        'prompts.csv') ->None:
         """
         Initializes the Cache with the specified cache folder and cache file.
 
@@ -35,19 +38,16 @@ class Cache:
             cache_folder (str, optional): The name of the cache folder. Defaults to ".cache".
             cache_file (str, optional): The name of the cache file. Defaults to "prompts.csv".
         """
-        self.cache_folder = os.path.join(os.path.dirname(__file__), cache_folder)
+        self.cache_folder = os.path.join(os.path.dirname(__file__),
+            cache_folder)
         self.cache_file = os.path.join(self.cache_folder, cache_file)
-
-        # Create cache directory if it doesn"t exist
         if not os.path.exists(self.cache_folder):
             os.makedirs(self.cache_folder)
-
-        # Create template cache file if it doesn"t exist
         if not os.path.exists(self.cache_file):
-            df = pd.DataFrame(columns=["prompt"])
+            df = pd.DataFrame(columns=['prompt'])
             df.to_csv(self.cache_file, index=False)
 
-    def update(self, prompt: str, answer: str) -> Optional[str]:
+    def update(self, prompt: str, answer: str) ->Optional[str]:
         """
         Updates the cache with a new prompt and answer.
 
@@ -68,32 +68,22 @@ class Cache:
             Optional[str]: 1 if the prompt already exists in the cache, 0 otherwise.
         """
         if os.path.exists(self.cache_file):
-            # Read existing CSV file
             df = pd.read_csv(self.cache_file)
-
-            # Check if prompt already exists
-            if prompt in df["prompt"].values:
-                # If prompt exists, return the answer from the respective CSV file
-                row_index = df.index[df["prompt"] == prompt].tolist()[0]
-                pd.read_csv(f"{self.cache_folder}/{row_index}.csv")
+            if prompt in df['prompt'].values:
+                row_index = df.index[df['prompt'] == prompt].tolist()[0]
+                pd.read_csv(f'{self.cache_folder}/{row_index}.csv')
                 return 1
             else:
-                # Append new row
-                new_row = pd.DataFrame({"prompt": [prompt]})
+                new_row = pd.DataFrame({'prompt': [prompt]})
                 df = pd.concat([df, new_row], ignore_index=True)
         else:
-            # Create new DataFrame
-            df = pd.DataFrame({"prompt": [prompt]})
-
-        # Write DataFrame to CSV file
+            df = pd.DataFrame({'prompt': [prompt]})
         df.to_csv(self.cache_file, index=False)
-
-        # Save the answer to a new CSV file in the cache folder
-        answer_df = pd.DataFrame({"answer": [answer]})
-        answer_df.to_csv(f"{self.cache_folder}/{len(df)-1}.csv", index=False)
+        answer_df = pd.DataFrame({'answer': [answer]})
+        answer_df.to_csv(f'{self.cache_folder}/{len(df) - 1}.csv', index=False)
         return 0
-    
-    def delete(self, prompt: str) -> None:
+
+    def delete(self, prompt: str) ->None:
         """
         Deletes a prompt and its answer from the cache.
 
@@ -106,22 +96,17 @@ class Cache:
             prompt (str): The prompt to be deleted from the cache.
         """
         if os.path.exists(self.cache_file):
-            # Read existing CSV file
             df = pd.read_csv(self.cache_file)
-
-            # Check if prompt exists
-            if prompt in df["prompt"].values:
-                # If prompt exists, delete it and its corresponding answer file
-                row_index = df.index[df["prompt"] == prompt].tolist()[0]
+            if prompt in df['prompt'].values:
+                row_index = df.index[df['prompt'] == prompt].tolist()[0]
                 df = df.drop(row_index)
                 df.to_csv(self.cache_file, index=False)
-
-                answer_file = f"{self.cache_folder}/{row_index}.csv"
+                answer_file = f'{self.cache_folder}/{row_index}.csv'
                 if os.path.exists(answer_file):
                     os.remove(answer_file)
         return None
 
-    def lookup(self, prompt: str) -> bool:
+    def lookup(self, prompt: str) ->bool:
         """
         Checks if a prompt is in the cache.
 
@@ -136,15 +121,11 @@ class Cache:
             bool: True if the prompt exists in the cache, False otherwise.
         """
         if os.path.exists(self.cache_file):
-            # Read existing CSV file
             df = pd.read_csv(self.cache_file)
-
-            # Check if prompt already exists
-            if prompt in df["prompt"].values:
+            if prompt in df['prompt'].values:
                 return True
-
         return False
-    
+
     def get_answer(self, prompt: str):
         """
         Gets the answer for a prompt from the cache.
@@ -162,13 +143,9 @@ class Cache:
             The answer for the prompt if it exists in the cache, None otherwise.
         """
         if os.path.exists(self.cache_file):
-            # Read existing CSV file
             df = pd.read_csv(self.cache_file)
-
-            # Check if prompt already exists
-            if prompt in df["prompt"].values:
-                # If prompt exists, return the answer from the respective CSV file
-                row_index = df.index[df["prompt"] == prompt].tolist()[0]
-                answer_df = pd.read_csv(f"{self.cache_folder}/{row_index}.csv")
-                return answer_df["answer"].values[0]
+            if prompt in df['prompt'].values:
+                row_index = df.index[df['prompt'] == prompt].tolist()[0]
+                answer_df = pd.read_csv(f'{self.cache_folder}/{row_index}.csv')
+                return answer_df['answer'].values[0]
         return None

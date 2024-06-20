@@ -19,44 +19,28 @@ import httpx
 from openai import AzureOpenAI
 from merge_agent.src.functions import encode_to_base64, decode_from_base64
 from merge_agent.src.cache import Cache
-
 EXPLANATION, ANSWER = 0, 0
 CODE, COMMIT_MSG = 1, 1
-git_access_token = os.environ["GIT_ACCESS_TOKEN"]
+git_access_token = os.environ['GIT_ACCESS_TOKEN']
+client = AzureOpenAI(api_key=os.getenv('OPENAI_API_KEY'), api_version=
+    '2024-02-01', azure_endpoint=os.getenv('AZURE_OPENAI_ENDPOINT'),
+    http_client=httpx.Client(proxies=os.environ['HTTPS_PROXY'], timeout=
+    httpx.Timeout(600.0, read=600.0)))
 
-client = AzureOpenAI(
-    api_key=os.getenv("OPENAI_API_KEY"),
-    api_version="2024-02-01",
-    azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
-    http_client=httpx.Client(
-        proxies=os.environ["HTTPS_PROXY"],
-        timeout=httpx.Timeout(600.0, read=600.0)
-    )
-)
 
-def get_completion(prompt, model="GCDM-EMEA-GPT4-1106", type="json_object"): # make global env variable that's used for the model
+def get_completion(prompt, model='GCDM-EMEA-GPT4-1106', type='json_object'):
     """
     Sends a prompt to the OpenAI API and returns the AI"s response.
     """
-    messages = [
-        {
-            "role": "system",
-            "content": "You are a system designed to improve code quality."
-        },
-        {
-            "role": "user",
-            "content": prompt
-        }
-    ]
-    response = client.chat.completions.create(
-        model=model,
-        messages=messages,
-        temperature=0, # this is the degree of randomness of the model"s output,
-        response_format={"type": type}
-    )
+    messages = [{'role': 'system', 'content':
+        'You are a system designed to improve code quality.'}, {'role':
+        'user', 'content': prompt}]
+    response = client.chat.completions.create(model=model, messages=
+        messages, temperature=0, response_format={'type': type})
     return response.choices[0].message.content
 
-class MergeAgent():
+
+class MergeAgent:
     """
     The Agent class is designed to solve merge conflicts in a Git repository.
     It has several responsibilities:
@@ -68,7 +52,8 @@ class MergeAgent():
     6. Creating a pull request in the downstream repository.
     """
 
-    def __init__(self, repo, json_model="GCDM-EMEA-GPT4-1106", text_model="GCDM-EMEA-GPT4"):
+    def __init__(self, repo, json_model='GCDM-EMEA-GPT4-1106', text_model=
+        'GCDM-EMEA-GPT4'):
         """
         Initializes the Agent with two Git repositories: downstream and upstream.
 
@@ -85,15 +70,12 @@ class MergeAgent():
         """
         self._repo = repo
         self._file_paths = []
-        self._prompt = ""
-
+        self._prompt = ''
         self.explanations = []
         self.responses = []
-        self.commit_msg = ""
-
+        self.commit_msg = ''
         self.json_model = json_model
         self.text_model = text_model
-
         self._cache = Cache()
 
     def get_file_paths(self):
@@ -104,7 +86,7 @@ class MergeAgent():
             list of str: The file paths of the files with merge conflicts.
         """
         return self._file_paths
-    
+
     def get_responses(self):
         """
         Returns the responses (solutions to the merge conflicts) from the AI model.
@@ -113,7 +95,7 @@ class MergeAgent():
             list of str: The responses from the AI model.
         """
         return self.responses
-    
+
     def get_commit_msg(self):
         """
         Returns the commit message.
@@ -141,21 +123,19 @@ class MergeAgent():
         """
         base64_prompt = encode_to_base64(self._prompt)
         if self._cache.lookup(base64_prompt):
-            print("Cache hit!\n")
+            print('Cache hit!\n')
             cache_content = self._cache.get_answer(base64_prompt)
             response = decode_from_base64(cache_content)
-            response = ast.literal_eval(response) #Prevent json.loads from throwing an error
+            response = ast.literal_eval(response)
         else:
-            print("Cache miss!")
-            response = json.loads(get_completion(self._prompt, model=self.json_model ,type="json_object"))
-            self._cache.update(
-                base64_prompt,
-                encode_to_base64(response)
-                )                
-        self.explanations += [response["explanation"]]
-        self.responses += [response["code"]] # merge conflict resolved file content
+            print('Cache miss!')
+            response = json.loads(get_completion(self._prompt, model=self.
+                json_model, type='json_object'))
+            self._cache.update(base64_prompt, encode_to_base64(response))
+        self.explanations += [response['explanation']]
+        self.responses += [response['code']]
         return response
-    
+
     def make_commit_msg(self):
         """
         Generates a commit message based on the explanations provided by the AI model.
@@ -168,15 +148,12 @@ class MergeAgent():
         """
         commit_prompt = prompts.commit_prompt
         for i, explanation in enumerate(self.explanations):
-            commit_prompt += "Explanation " + str(i) + ":\n"
-            commit_prompt += explanation + "\n"
-        self.commit_msg = get_completion(
-            commit_prompt,
-            model=self.text_model,
-            type="text"
-            )
+            commit_prompt += 'Explanation ' + str(i) + ':\n'
+            commit_prompt += explanation + '\n'
+        self.commit_msg = get_completion(commit_prompt, model=self.
+            text_model, type='text')
 
-    def make_prompt(self, file_path: str, file_content:str) -> str:
+    def make_prompt(self, file_path: str, file_content: str) ->str:
         """
         Generates a prompt for the AI model based on the file path and content.
 
@@ -199,15 +176,15 @@ class MergeAgent():
         """
         Returns a string representation of the Agent.
 
-        This method constructs a string that starts with "Merged File_Paths:\n" and appends each file 
+        This method constructs a string that starts with "Merged File_Paths:
+" and appends each file 
         path from the _file_paths list to the string. The string representation is used when the print 
         function is called on an instance of the Agent class.
 
         Returns:
             str: A string representation of the Agent.
         """
-        out = "Merged File_Paths:\n"
+        out = 'Merged File_Paths:\n'
         for file_path in self._file_paths:
-            out += file_path + "\n"
+            out += file_path + '\n'
         return out
-        
